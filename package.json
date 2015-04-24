@@ -1,6 +1,6 @@
 {
   "name": "libprofitbricks",
-  "version": "1.5.1-rel",
+  "version": "1.5.3-rel",
   "description": "The ProfitBricks Library for Node and Io",
   "main": "./lib/index.js",
   "scripts": {
