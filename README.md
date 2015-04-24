@@ -169,7 +169,7 @@ These are the object factory functions.
         snapshot: function(props)
 
         volume: function(props)
- ```
+```
 Another Example
 
 ```javascript
@@ -195,22 +195,6 @@ Another Example
 
 * "props" can be any or all or none of the properties for the object.
 
-* Invalid "props" keys are dropped.
-
-```javascript
-	var srv= new libpb.server({'bill':3}) // <--- Drops the 'bill' key
-
-	> srv.show()
-	{
-	"properties":
-	{"name":"f","ram":"3192","cores":"1"},
-	"entities":
-	{"cdroms":{"items":[]},"nics":{"items":[]},"volumes":{"items":[]}}
-	}
-```
-
-* Bad values for valid "props" keys are passed to the server and the error is returned.
-.
 Show() is handy for listing the properties available to an object.
 	
 ```javascript	
@@ -221,19 +205,9 @@ Show() is handy for listing the properties available to an object.
 		"name":"v is for volume", 
 		"size":80, 
 		"bus":"VIRTIO", "image":"",
-		"imagePassword":"null",
 		"type":"HDD",
 		"licenceType":"UNKNOWN",
-		"cpuHotPlug":false,
-		"cpuHotUnplug":false,
-		"ramHotPlug":false,
-		"ramHotUnplug":false,
-		"nicHotPlug":false,
-		"nicHotUnplug":false,
-		"discVirtioHotPlug":false,
-		"discVirtioHotUnplug":false,
-		"discScsiHotPlug":false,
-		"discScsiHotUnplug":false
+		
 		},
 		"entities":undefined
 		}
@@ -348,15 +322,15 @@ Show() is handy for listing the properties available to an object.
         
 	var nic7 = libpb.nic(	{name:'nic7',
 				ips:['10.2.2.7'],
-				dhcp:'true',
+				dhcp:'',
         			lan:1,
-        			firewall_active:true})
+        			})
 				
 	var nic9 = libpb.nic(	{name:'nic9',
 				ips:['10.2.2.9'],
-				dhcp:'true',
+				dhcp:'',
         			lan:1,
-        			firewall_active:true})			
+        			})			
 	
 	srv.addNic(nic7)
 	srv.addNic(nic9)
@@ -424,17 +398,15 @@ To create a simple one you would do this:
         
 	var nic7 = libpb.nic(	{name:'nic7',
 				ips:['10.2.2.7'],
-				dhcp:'true',
         			lan:1,
-        			firewall_active:true})			
+        			})			
 	
 	srv.addNic(nic7)
 
 	var nic9 = libpb.nic(	{name:'nic9',
 				ips:['10.2.2.9'],
-				dhcp:'true',
         			lan:1,
-        			firewall_active:true})		
+        			})		
 
 	srv.addNic(nic9)
 	
@@ -516,7 +488,7 @@ Listing resources is fairly straight forward.
 	 
     	var datacenter_id = '700e1cab-99b2-4c30-ba8c-1d273ddba022'
 		
-	libpb.listVolumes(datacenter_id,myOptionalCallback)
+	libpb.listVolumes(datacenter_id)
 ```
 
 ## How to: Create Additional Network Interfaces
@@ -533,11 +505,18 @@ The sample below shows you how to add a second NIC to an existing server:
     	dc_id = '700e1cab-99b2-4c30-ba8c-1d273ddba022'
     	srv_id = '700e1cab-99b2-4c30-ba8c-1d273ddba023'
 
-   	var jason={name:'nic11',ips:['10.2.2.11'],dhcp:'false',lan:1,firewall_active:true})
+   	var jason={name:'nic11',ips:['10.2.2.11'],lan:1})
 
 	libpb.createNic(dc_id,srv_id,jason,myOptionalCallback)	
 ```
 
+
+* Change the endpoint.
+
+```javascript
+
+libprofitbricks.endpoint='http://example.com/rest'
+```
 
 * libprofitbricks exposes the options object from the request module,
 
@@ -661,7 +640,6 @@ libpb.pbauth: function(sixfourstring)
 		this.properties= {
 		
 			size: 5,	
-			ips: [],
 			location: "de/fkb"
   		}
 ```
@@ -765,12 +743,9 @@ libpb.pbauth: function(sixfourstring)
 		this.set=function(property,value)
 		this.properties={
 				name: "",
-				mac: "",
 				ips: [],
 				dhcp: "",
-				lan :  "",
-				firewallActive:""
-			
+				lan :  ""
 				}
 		
 		
@@ -886,22 +861,11 @@ libpb.pbauth: function(sixfourstring)
 		this.set=function(property,value)
 	 	this.properties= {
 	
-			name: "The Snapshot",
-			description: "description of a snapshot",
-			location: "de/fkb",
-			size: 28,
-			cpuHotPlug: false,
-			cpuHotUnplug: false,
-			ramHotPlug: false,
-			ramHotUnplug: false,
-			nicHotPlug: false,
-			nicHotUnplug: false,
-			discVirtioHotPlug: false,
-			discVirtioHotUnplug: false,
-			discScsiHotPlug: false,
-			discScsiHotUnplug: false,
-			licenceType: "UNKNOWN"
-  	
+	 name: "The Snapshot",
+                        description: "description of a snapshot",
+                        location: "de/fkb",
+                        size: 28,
+                        licenceType: "UNKNOWN"
 			}
 	
 ```
@@ -937,20 +901,9 @@ libpb.pbauth: function(sixfourstring)
     			"name": "",
 			"size": 80,
     			"bus": "VIRTIO",
-    			"image": "",
-    			"imagePassword": "",
     			"type": "HDD",
-			"licenceType": "",
-    			"cpuHotPlug": false,
-			"cpuHotUnplug": false,
-			"ramHotPlug": false,
-			"ramHotUnplug": false,
-			"nicHotPlug": false,
-			"nicHotUnplug": false,
-			"discVirtioHotPlug": false,
-			"discVirtioHotUnplug": false,
-			"discScsiHotPlug": false,
-			"discScsiHotUnplug": false
+			"licenceType": "UNKNOWN"
+    	
   		}
 ```
 
