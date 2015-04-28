@@ -55,7 +55,7 @@ Done!
 
 Connecting to ProfitBricks is handled by first setting up your authentication.  
 ```javascript
-    	var libpb=require('libprofitbricks')
+    var libpb=require('libprofitbricks')
 	libpb.setauth('username','password')
 ```	
 ## Using the Module
@@ -66,6 +66,35 @@ Connecting to ProfitBricks is handled by first setting up your authentication.
 	var srv= new libpb.server() 
 ```
 
+* Change the endpoint.
+
+```javascript
+
+    libprofitbricks.endpoint='http://example.com/rest'
+```
+
+* libprofitbricks exposes the options object from the request module,
+
+```javascript
+    >libpb.options
+    { headers: {} }
+``` 
+* depth is used to control the amount of json returned, the scale is 1 to 5.
+```
+    libpb.depth= 1,
+
+    libpb.setdepth(5)
+```
+* authenticate
+```javascript		
+    libpb.setauth: function(username,password)
+```
+* pbauth takes a pre-encoded string for http basic authentication
+
+```javascript 
+    libpb.pbauth: function(sixfourstring)
+```
+ 
 ## Making JSON Objects (The Easy Way)
 
 * There are several functions you can use to assemble ProfitBricks json objects.
@@ -155,8 +184,8 @@ These are the object factory functions.
         server: function(props)
 
         nic: function(props)
-
-        firewallrule: function(props)
+   
+        firewallrule: function(props) //props is required
 
         image: function(props)
 
@@ -178,13 +207,13 @@ Another Example
 	
 	
 	var srv= new libpb.server({"name":"f", 
-	                           "ram":"3192",
+	                           "ram":"8192",
 				   "cores":"1"}) // <--- props passed in
 
  	> srv.show()
 	{
 	"properties":
-	{"name":"f","ram":3192,"cores":1}, // <--- props passed out 
+	{"name":"f","ram":8192,"cores":1}, // <--- props passed out 
 	"entities":
 	{"cdroms":{"items":[]},
 	"nics":{"items":[]},
@@ -193,7 +222,7 @@ Another Example
 
 ```
 
-* "props" can be any or all or none of the properties for the object.
+* "props" replaces the objects properties
 
 Show() is handy for listing the properties available to an object.
 	
@@ -246,7 +275,7 @@ Show() is handy for listing the properties available to an object.
 	
 		{
 		"properties":
-		{"name":"srvfu57","ram":0,"cores":0},
+		{"name":"srvfu57","ram":2048,"cores":4},
 		"entities":
 		{"cdroms":{"items":[]},"nics":{"items":[]},"volumes":{"items":[]}}
 		}
@@ -510,37 +539,6 @@ The sample below shows you how to add a second NIC to an existing server:
 	libpb.createNic(dc_id,srv_id,jason,myOptionalCallback)	
 ```
 
-
-* Change the endpoint.
-
-```javascript
-
-libprofitbricks.endpoint='http://example.com/rest'
-```
-
-* libprofitbricks exposes the options object from the request module,
-
-```javascript
->libpb.options
-{ headers: {} }
-``` 
-* depth is used to control the amount of json returned, the scale is 1 to 5.
-```
-libpb.depth= 1,
-
-libpb.setdepth: function(depth)
-```
-just to make it cleaner
-
-```javascript		
-libpb.setauth: function(username,password)
-```
-* pbauth takes a pre-encoded string for http basic authentication
-
-```javascript 
-libpb.pbauth: function(sixfourstring)
-```
- 
 ## Datacenter functions
 ```javascript
 	datacenter: function(props)
@@ -586,23 +584,14 @@ libpb.pbauth: function(sixfourstring)
 ```	
 ## Firewall Rule functions
 ```javascript
-
-	firewallrule:function (props)
+    
+    //props is required for firewall rules
+    
+	firewallrule:function(props)
 		this.set=function(property,value)
 		this.show=function()
-		this.properties={
-    		
-			"name": "port",
-			"protocol": "TCP",
-			"sourceMac": "",
-			"sourceIp": '',
-			"targetIp": '',
-			"portRangeStart": 0,
-			"portRangeEnd": "",
-			"icmpType": "",
-			"icmpCode": ""
-  		}
-	
+		this.properties=props
+		
 	listFWRules : function(dc_id,srv_id,nic_id,callback)
 
 	createFWRule : function(dc_id,srv_id,nic_id,jason,callback)
@@ -792,8 +781,8 @@ libpb.pbauth: function(sixfourstring)
 		this.properties={
 		
 				name : "",
-			 	ram : 0,
-			 	cores : 0
+			 	ram : "8192",
+			 	cores : "4"
 				}		
 	
 		this.entities={
