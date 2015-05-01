@@ -3,35 +3,28 @@
   "version": "1.5.9-rel",
   "description": "The ProfitBricks Library for Node and Io",
   "main": "./lib/index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "dependencies": {
+    "prettyjson": "^1.1.0",
+    "request": "^2.55.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/StackPointCloud/profitbricks-sdk-nodejs.git"
   },
-  "author": "bigtuna <adrian@stackpointcloud.com>",
+  "keywords": [
+    "\"ProfitBricks\""
+  ],
+   "author": "bigtuna <adrian@stackpointcloud.com>",
   "license": "BSD",
   "bugs": {
     "url": "https://github.com/StackPointCloud/profitbricks-sdk-nodejs/issues"
   },
-  "homepage": "https://github.com/StackPointCloud/profitbricks-sdk-nodejs",
-  "dependencies": {
-    "request": "^2.55.0",
-   "prettyjson: "1.1.0"
-  },
-  "devDependencies": {},
-  "directories": {
-    "example": "examples"
-  },
-  "keywords": [
-  "ProfitBricks",
-    "sdk",
-    "cloud",
-    "REST",
-    "cloud sdk",
-    "deploy",
-    "api",
-    "Stack Point Cloud",
-    "libProfitBricks",
-    "ProfitBricks"
-
-  ]
+  "homepage": "https://github.com/StackPointCloud/profitbricks-sdk-nodejs"
 }
