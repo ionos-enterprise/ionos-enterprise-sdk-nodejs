@@ -1,11 +1,8 @@
 {
   "name": "libprofitbricks",
-  "version": "1.5.7-rel",
+  "version": "1.5.9-rel",
   "description": "The ProfitBricks Library for Node and Io",
   "main": "./lib/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/StackPointCloud/profitbricks-sdk-nodejs.git"
@@ -17,7 +14,8 @@
   },
   "homepage": "https://github.com/StackPointCloud/profitbricks-sdk-nodejs",
   "dependencies": {
-    "request": "^2.53.0"
+    "request": "^2.55.0",
+   "prettyjson: "^1.1.0"
   },
   "devDependencies": {},
   "directories": {
