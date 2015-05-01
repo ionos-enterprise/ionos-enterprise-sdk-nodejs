@@ -1,6 +1,6 @@
 {
   "name": "libprofitbricks",
-  "version": "1.5.9-rel",
+  "version": "1.5.91-rel",
   "description": "The ProfitBricks Library for Node and Io",
   "main": "./lib/index.js",
   "directories": {
@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "prettyjson": "^1.1.0",
-    "request": "^2.55.0"
+    "request": "2.53.0"
   },
   "devDependencies": {},
   "scripts": {
