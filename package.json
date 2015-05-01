@@ -15,7 +15,7 @@
   "homepage": "https://github.com/StackPointCloud/profitbricks-sdk-nodejs",
   "dependencies": {
     "request": "^2.55.0",
-   "prettyjson: "^1.1.0"
+   "prettyjson: "1.1.0"
   },
   "devDependencies": {},
   "directories": {
