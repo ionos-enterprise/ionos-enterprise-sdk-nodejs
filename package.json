@@ -1,6 +1,6 @@
 {
   "name": "libprofitbricks",
-  "version": "1.5.7-rel",
+  "version": "1.6.1-rel",
   "description": "The ProfitBricks Library for Node and Io",
   "main": "./lib/index.js",
   "scripts": {
@@ -17,7 +17,8 @@
   },
   "homepage": "https://github.com/StackPointCloud/profitbricks-sdk-nodejs",
   "dependencies": {
-    "request": "^2.53.0"
+    "request": "^2.53.0",
+    "prettyjson": "^1.1.0"
   },
   "devDependencies": {},
   "directories": {
