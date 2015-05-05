@@ -536,7 +536,7 @@ The sample below shows you how to add a second NIC to an existing server:
 
    	var jason={name:'nic11',ips:['10.2.2.11'],lan:1})
 
-	libpb.createNic(dc_id,srv_id,jason,myOptionalCallback)	
+	libpb.createNic(dc_id,srv_id,jason)	
 ```
 
 ## Datacenter functions
@@ -689,9 +689,8 @@ The sample below shows you how to add a second NIC to an existing server:
 		this.set=function(property,value)
 		this.properties={
     			
-				name: "",		
-				ip: "",
-				dhcp: ""
+				name: "Load Balancer"		
+				
 				}
 		
 		  		this.entities={
@@ -780,7 +779,7 @@ The sample below shows you how to add a second NIC to an existing server:
 		this.set=function(property,value)
 		this.properties={
 		
-				name : "",
+				name : "Server",
 			 	ram : "8192",
 			 	cores : "4"
 				}		
@@ -815,7 +814,7 @@ The sample below shows you how to add a second NIC to an existing server:
 
 	listAttachedVolumes : function(dc_id,srv_id,callback)
 
-	attachVolume : function(dc_id,srv_id,jason,callback)
+	attachVolume : function(dc_id,srv_id,volume_id,callback)
 	
 	getAttachedVolume : function(dc_id,srv_id,volume_id,callback)
 	
@@ -826,7 +825,7 @@ The sample below shows you how to add a second NIC to an existing server:
 
 	listAttachedCdroms : function(dc_id,srv_id,callback)
 	
-	attachCdrom : function(dc_id,srv_id,jason,callback)
+	attachCdrom : function(dc_id,srv_id,cdrom_id,callback)
 	
 	getAttachedCdrom : function(dc_id,srv_id,cdrom_id,callback)
 	
@@ -835,11 +834,11 @@ The sample below shows you how to add a second NIC to an existing server:
 ## Server Commands
 ```javascript
 
-	rebootServer: function(dc_id,srv_id,jason,callback)
+	rebootServer: function(dc_id,srv_id,callback)
 
-	startServer: function(dc_id,srv_id,jason,callback)
+	startServer: function(dc_id,srv_id,callback)
 	
-	stopServer: function(dc_id,srv_id,jason,callback)	
+	stopServer: function(dc_id,srv_id,callback)	
 ```			
 
 ## Snapshot functions
@@ -870,8 +869,11 @@ The sample below shows you how to add a second NIC to an existing server:
 	patchSnapshot : function(snapshot_id,jason,callback)
 	
 	updateSnapshot : function(snapshot_id,jason,callback)
+	
+	/** createSnapshot jason can have name and/or description **/
 		
-	createSnapshot : function(dc_id,volume_id,str,callback)
+	createSnapshot : function(dc_id,volume_id,jason,callback)
+	
 	
 	restoreSnapshot : function(dc_id,volume_id,jason,callback)
 	
