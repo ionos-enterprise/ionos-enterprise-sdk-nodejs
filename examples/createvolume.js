@@ -1,16 +1,16 @@
 //Create Volume
 
-pb=require('libprofitbricks')
+var libpb=require('libprofitbricks')
 
-pb.setauth("username","password")
+libpb.setauth('username','password') 		// <---- Your username and password
 
 
-var dc_id = '700e1cab-99b2-4c30-ba8c-1d273ddba022'
+var dcid='f355b51d-1c9c-4150-bc55-a616fe3bf437' 	 // <--- Your data center id
 
-var vol=new pb.volume({	"size": 56,
-            			"name": "Explicitly created volume",
-            			"image": "<IMAGE/SNAPSHOT-ID>",
-            			"bus": "VIRTIO"
-        			})
+var vol=new libpb.volume( {'name': 'My Favorite Volume',
+                        'size': 80,
+                        'bus': "VIRTIO",
+                        'type': "HDD",
+                        'licenceType': "UNKNOWN"})
 
-pb.createVolume(dcid,vol)
+libpb.createVolume(dcid,vol)
