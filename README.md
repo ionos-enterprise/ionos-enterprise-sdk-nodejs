@@ -536,20 +536,23 @@ The sample below shows you how to add a second NIC to an existing server:
 
    	var jason={name:'nic11',ips:['10.2.2.11'],lan:1})
 
-	libpb.createNic(dc_id,srv_id,jason,myOptionalCallback)	
+	libpb.createNic(dc_id,srv_id,jason)	
 ```
 
 ## Datacenter functions
 ```javascript
 	datacenter: function(props)
 		this.show=function()
-		this.set=function(property,value)	
+		this.set=function(property,value)
+		
+		//this.required=['name','location']
+		//this.optional=['description']
+			
 		this.properties={
 			
-			 	name : "",
-				location : "",
-				description:""
-			
+			 	name : "Data center",
+				location : "us/las",
+				
 				}
 				
 		this.entities= {
@@ -590,6 +593,7 @@ The sample below shows you how to add a second NIC to an existing server:
 	firewallrule:function(props)
 		this.set=function(property,value)
 		this.show=function()
+		
 		this.properties=props
 		
 	listFWRules : function(dc_id,srv_id,nic_id,callback)
@@ -626,6 +630,10 @@ The sample below shows you how to add a second NIC to an existing server:
  	ipblock: function(props)
 		this.show=function()	
 		this.set=function(property,value)
+		
+		//this.required=['size','location']
+		//this.optional=[]
+		
 		this.properties= {
 		
 			size: 5,	
@@ -650,10 +658,12 @@ The sample below shows you how to add a second NIC to an existing server:
 	lan: function(props)
 		this.show=function()
 		this.set=function(property,value)
+		
+		//this.required=[]
+		//this.optional=['name','public']
+		
 		this.properties={
     			
-				name: "",	
-				public: ""
 				}
 		
 			
@@ -687,11 +697,14 @@ The sample below shows you how to add a second NIC to an existing server:
 	loadbalancer: function (props)
 		this.show=function()
 		this.set=function(property,value)
+		
+		//this.required=['name']
+		//this.optional=['ip','dhcp']
+		
 		this.properties={
     			
-				name: "",		
-				ip: "",
-				dhcp: ""
+				name: "Load Balancer"		
+				
 				}
 		
 		  		this.entities={
@@ -730,6 +743,10 @@ The sample below shows you how to add a second NIC to an existing server:
 	nic: function(props)
 		this.show=function()
 		this.set=function(property,value)
+		
+		//this.required=["name","lan"]
+                //this.optional=["mac","ips","dhcp","firewallActive"]
+		
 		this.properties={
 				name: "",
 				ips: [],
@@ -778,9 +795,13 @@ The sample below shows you how to add a second NIC to an existing server:
 	server: function(props)
 		this.show=function()
 		this.set=function(property,value)
+		
+		//this.required=['name','core','ram']
+		//this.optional=['availabilityzone','licensetype','bootVolume','bootCdrom']
+		
 		this.properties={
 		
-				name : "",
+				name : "Server",
 			 	ram : "8192",
 			 	cores : "4"
 				}		
@@ -815,7 +836,7 @@ The sample below shows you how to add a second NIC to an existing server:
 
 	listAttachedVolumes : function(dc_id,srv_id,callback)
 
-	attachVolume : function(dc_id,srv_id,jason,callback)
+	attachVolume : function(dc_id,srv_id,volume_id,callback)
 	
 	getAttachedVolume : function(dc_id,srv_id,volume_id,callback)
 	
@@ -826,7 +847,7 @@ The sample below shows you how to add a second NIC to an existing server:
 
 	listAttachedCdroms : function(dc_id,srv_id,callback)
 	
-	attachCdrom : function(dc_id,srv_id,jason,callback)
+	attachCdrom : function(dc_id,srv_id,cdrom_id,callback)
 	
 	getAttachedCdrom : function(dc_id,srv_id,cdrom_id,callback)
 	
@@ -835,29 +856,14 @@ The sample below shows you how to add a second NIC to an existing server:
 ## Server Commands
 ```javascript
 
-	rebootServer: function(dc_id,srv_id,jason,callback)
+	rebootServer: function(dc_id,srv_id,callback)
 
-	startServer: function(dc_id,srv_id,jason,callback)
+	startServer: function(dc_id,srv_id,callback)
 	
-	stopServer: function(dc_id,srv_id,jason,callback)	
+	stopServer: function(dc_id,srv_id,callback)	
 ```			
 
 ## Snapshot functions
-```javascript
-
-	snapshot: function(props)
-		this.show=function()
-		this.set=function(property,value)
-	 	this.properties= {
-	
-	 name: "The Snapshot",
-                        description: "description of a snapshot",
-                        location: "de/fkb",
-                        size: 28,
-                        licenceType: "UNKNOWN"
-			}
-	
-```
 
 ```javascript	
 
@@ -870,8 +876,11 @@ The sample below shows you how to add a second NIC to an existing server:
 	patchSnapshot : function(snapshot_id,jason,callback)
 	
 	updateSnapshot : function(snapshot_id,jason,callback)
+	
+	/** createSnapshot jason can have name and/or description **/
 		
-	createSnapshot : function(dc_id,volume_id,str,callback)
+	createSnapshot : function(dc_id,volume_id,jason,callback)
+	
 	
 	restoreSnapshot : function(dc_id,volume_id,jason,callback)
 	
@@ -884,6 +893,9 @@ The sample below shows you how to add a second NIC to an existing server:
 		this.show=function()
 	
 		this.set=function(property,value)
+
+		//this.required=['size']
+		//this.optional=['name','bus','type','licencetype']
 
 		this.properties= {
   

@@ -5,7 +5,7 @@
 libpb=require('libprofitbricks')
 	
 	
-var srv= new libpb.server({"name":"f", 
+var srv= new libpb.server({"name":"super server", 
 	                           "ram":"3192",
 				   "cores":"1"}) // <--- props passed in
 
