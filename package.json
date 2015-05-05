@@ -1,6 +1,6 @@
 {
   "name": "libprofitbricks",
-  "version": "1.6.17-rel",
+  "version": "1.6.21-rel",
   "description": "The ProfitBricks Library for Node and Io",
   "main": "./lib/index.js",
   "scripts": {
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/StackPointCloud/profitbricks-sdk-nodejs.git"
+    "url": "https://github.com/profitbricks/profitbricks-sdk-nodejs.git"
   },
   "author": "bigtuna <adrian@stackpointcloud.com>",
   "license": "BSD",
   "bugs": {
-    "url": "https://github.com/StackPointCloud/profitbricks-sdk-nodejs/issues"
+    "url": "https://github.com/profitbricks/profitbricks-sdk-nodejs/issues"
   },
-  "homepage": "https://github.com/StackPointCloud/profitbricks-sdk-nodejs",
+  "homepage": "https://github.com/profitbricks/profitbricks-sdk-nodejs",
   "dependencies": {
     "request": "^2.53.0"
   },
