@@ -1,6 +1,4 @@
-The ProfitBricks Client Library for Node.js provides you with access to the libprofitbricks REST API. The client library supports both simple and complex requests. It is designed for developers who are building applications in Node.js. 
-
-This guide will walk you through getting setup with the library and performing various actions against the API.  
+The ProfitBricks Client Library for Node.js allows interaction with the ProfitBricks platform over the REST API. It is designed for developers who are building applications in Node.js. This guide will walk you through installing the library and performing various actions against the API.  
 
 ## Table of Contents
 
@@ -8,27 +6,29 @@ This guide will walk you through getting setup with the library and performing v
 * [Getting Started](#getting-started)
 * [Installation](#installation)
 * [Authenticating](#authenticating)
-* [How to: Create a Datacenter](#how-to-create-a-datacenter)
-* [How to: Delete a Datacenter](#how-to-delete-a-datacenter)
+* [How to: Create a Data Center](#how-to-create-a-data-center)
+* [How to: Delete a Data Center](#how-to-delete-a-data-center)
 * [How to: Update Cores, Memory, and Disk](#how-to-update-cores-memory-and-disk)
 * [How to: List Servers, Volumes, and Data Centers](#how-to-list-servers-volumes-and-data-centers)
 * [How to: Create Additional Network Interfaces](#how-to-create-additional-network-interfaces)
-* [Datacenter functions](#datacenter-functions)
-* [Firewall Rule functions](#firewall-rule-functions)
-* [Image functions](#image-functions)
-* [Lan functions](#lan-functions)
-* [Loadbalancer functions](#loadbalancer-functions)
-* [Location functions](#location-functions)
-* [Nic functions](#nic-functions)
-* [Request functions](#request-functions)
-* [Server functions](#server-functions)
-* [Server Commands](#server-commands)
-* [Snapshot functions](#snapshot-functions)
-* [Volume functions](#volume-functions)
+* [Data Center Functions](#data-center-functions)
+* [Firewall Rule Functions](#firewall-rule-functions)
+* [Image Functions](#image-functions)
+* [LAN Functions](#lan-functions)
+* [Load Balancer Functions](#load-balancer-functions)
+* [Location Functions](#location-functions)
+* [NIC Functions](#nic-functions)
+* [Request Functions](#request-functions)
+* [Server Functions](#server-functions)
+* [Server Volume Functions](#server-volume-functions)
+* [Server CDROM Functions](#server-cdroms-functions)
+* [Server Command Functions](#server-command-functions)
+* [Snapshot Functions](#snapshot-functions)
+* [Volume Functions](#volume-functions)
 
-## <a name="Concepts"></a>Concepts
+## Concepts
 
-The Node.js Client Library, libprofitbricks, wraps the latest version of the ProfitBricks REST API. All API operations are performed over SSL and authenticated using your libprofitbricks portal credentials. The API can be accessed within an instance running in libprofitbricks or directly over the Internet from any application that can send an HTTPS request and receive an HTTPS response. 
+The Node.js Client Library, libprofitbricks, wraps the latest version of the ProfitBricks REST API. All API operations are performed over SSL and authenticated using your ProfitBricks account credentials. The API can be accessed within a server running on the ProfitBricks platform or directly over the Internet from any application that can send and receive HTTPS requests and responses. 
 
 ## Getting Started
 
@@ -36,325 +36,305 @@ Before you begin you will need to have [signed-up](https://www.ProfitBricks.com/
  
 ## Installation
 
-The Node.js Client Library is available on [npm](https://www.npmjs.com/package/libprofitbricks). You can install the latest stable version using 
-npm:
+The Node.js Client Library is available on [npm](https://www.npmjs.com/package/libprofitbricks). You can install the latest stable version using npm:
 
     npm install libprofitbricks
 
-Done!
-
 ## Authenticating
 
-Connecting to ProfitBricks is handled by first setting up your authentication.  
+Connecting to ProfitBricks is handled by first setting up your authentication credentials.  
 
-	var libpb=require('libprofitbricks')
-	libpb.setauth('username','password')
+    var libpb = require('libprofitbricks')
+    libpb.setauth('username', 'password')
 
-depth is used to control the depth of JSON object returned, the scale is 1 to 5.
+The `depth` is used to control the depth of JSON object returned. The depth value can be from 1 to 5.
 
-    libpb.depth= 1,
+    libpb.depth = 1
 
     libpb.setdepth(5)
 
-## <a name="how-to-create-a-datacenter"></a>How to: Create a Data Center
+## How to: Create a Data Center
 
-ProfitBricks introduces the concept of Data Centers. These are logically separated from one and the other and allow you to have a self-contained environment for all servers, volumes, networking, snapshots, and so forth. The goal is to give you the same experience as you would have if you were running your own physical data center.
+ProfitBricks uses the concept of data centers. These are logically separated from one another and allow you to have a self-contained environment for all servers, volumes, networking, snapshots, and so forth. The goal is to give you the same experience as you would have if you were running your own physical data center.
 
 You will need a data center before you can create anything else. Like the server functions, the data center functions can be used to create a simple data center or a complex one. 
 
 To create a simple one you would do this: 
-	
 
-	var libpb=require('libprofitbricks')
-
-	 dcData = {
-            "properties": {
-                "name":"Test Data Center",
-                "location":"us/las",
-                "description":"Test description"
-            }
-        };
-	
-	libpb.createDatacenter(dcData, function(error, response, body){
-		console.log(body)
- 		console.log(error)
- 		console.log(response)		
-	})
-	
+    var libpb=require('libprofitbricks')
+    
+    dcData = {
+        "properties": {
+            "name": "Test Data Center",
+            "location": "us/las",
+            "description": "Test description"
+        }
+    };
+    
+    libpb.createDatacenter(dcData, function(error, response, body) {
+        console.log(body)
+        console.log(error)
+        console.log(response)        
+    })
+    
 You can find more detailed information about data center creation [here](https://devops.profitbricks.com/api/rest/#create-a-data-center)
 
-## <a name="how-to-delete-a-datacenter"></a>How to: Delete a Data Center
+## How to: Delete a Data Center
 
-You will want to exercise a bit of caution here. 
-Removing a data center will **destroy** all objects contained within that data center,
-servers, volumes, snapshots, and so on. 
+You will want to exercise a bit of caution here. Removing a data center will **destroy** all objects contained within that data center including servers, volumes, snapshots, and so forth. 
 
+    var libpb = require('libprofitbricks')
 
-	var libpb=require('libprofitbricks')
-
-	libpb.setauth('username','password')
-	 
-	datacenter_id = '700e1cab-99b2-4c30-ba8c-1d273ddba022'
-    	
-	libpb.deleteDatacenter(datacenter_id, callback)
+    libpb.setauth('username', 'password')
+     
+    datacenter_id = '700e1cab-99b2-4c30-ba8c-1d273ddba022'
+        
+    libpb.deleteDatacenter(datacenter_id, callback)
 
 ## How to: Update Cores, Memory, and Disk
 
-libprofitbricks allows users to dynamically update cores, memory, and disk independently of each other. This removes the restriction of needing to upgrade to the next size up to receive an increase in memory. You can now simply increase the instances memory keeping your costs in-line with your resource needs. 
+ProfitBricks allows users to dynamically update cores, memory, and disk independently of each other. This removes the restriction of needing to upgrade to the next instance size to receive an increase in memory. You can now simply increase the server's memory thereby keeping your costs in-line with your resource needs. 
 
-The following code illustrates how you can update cores and memory: 
+The following code illustrates how you can update the cores and memory of a server: 
 
-	var libpb=require('libprofitbricks')
-
-	libpb.setauth('username','password')
-	 
-	var datacenter_id = '1234567-1234-1234-1234-123456789012'
-	var server_id = '1234567-1234-1234-1234-123456789012'
-
-	var data ={ cores:'16',ram:'2048' } 
-
-	libpb.updateServer(datacenter_id, server_id, data, callback)
+    var libpb = require('libprofitbricks')
+    
+    libpb.setauth('username', 'password')
+     
+    var datacenter_id = '1234567-1234-1234-1234-123456789012'
+    var server_id = '1234567-1234-1234-1234-123456789012'
+    
+    var data = { cores: '16', ram: '2048' } 
+    
+    libpb.updateServer(datacenter_id, server_id, data, callback)
 
 ## How to: List Servers, Volumes, and Data Centers
 
-Listing resources is fairly straight forward. 
+Listing resources is fairly straight forward. To view all data centers:
 
-Listing the datacenters:
+    var libpb = require('libprofitbricks')
+    
+    libpb.setauth('username', 'password')
+    
+    libpb.listDatacenters(function(error, response, body) {
+        console.log(body)
+        console.log(error)
+        console.log(response)        
+    })
 
-## List Our Data Centers
+Listing servers within a data center:
 
-   	var libpb=require('libprofitbricks')
+    var libpb = require('libprofitbricks')
+    
+    libpb.setauth('username', 'password')
+    
+    var datacenter_id = '700e1cab-99b2-4c30-ba8c-1d273ddba022'
+    
+    libpb.listServers(datacenter_id, callback)
 
-	libpb.setauth('username','password')
-	
-    	libpb.listDatacenters(function(error, response, body){
-			console.log(body)
-     		console.log(error)
-     		console.log(response)		
-		})
+Listing volumes within a data center: 
 
-
-Listing servers in a data center:
-
-  	var libpb=require('libprofitbricks')
-
-	libpb.setauth('username','password')
-	 
-	var datacenter_id = '700e1cab-99b2-4c30-ba8c-1d273ddba022'
-		
-	libpb.listServers(datacenter_id, callback)
-
-
-Listing your volumes: 
-
-  	var libpb=require('libprofitbricks')
-
-	libpb.setauth('username','password')
-	 
-	var datacenter_id = '700e1cab-99b2-4c30-ba8c-1d273ddba022'
-		
-	libpb.listVolumes(datacenter_id, callback)
+    var libpb = require('libprofitbricks')
+    
+    libpb.setauth('username', 'password')
+    
+    var datacenter_id = '700e1cab-99b2-4c30-ba8c-1d273ddba022'
+    
+    libpb.listVolumes(datacenter_id, callback)
 
 ## How to: Create Additional Network Interfaces
 
-The ProfitBricks platform supports adding multiple NICs to a server. 
-These NICs can be used to create different, segmented networks on the platform. 
+The ProfitBricks platform supports adding multiple NICs to a server. These NICs can be used to create segmented networks on the platform. 
 
 The sample below shows you how to add a second NIC to an existing server: 
 
-  	var libpb=require('libprofitbricks')
+    var libpb = require('libprofitbricks')
+    
+    libpb.setauth('username', 'password')
+    
+    dc_id = '700e1cab-99b2-4c30-ba8c-1d273ddba022'
+    server_id = '700e1cab-99b2-4c30-ba8c-1d273ddba023'
+    
+    var data = {name: 'nic11', ips: ['10.2.2.11'], lan: 1}
+    
+    libpb.createNic(dc_id, server_id, data)
 
-	libpb.setauth('username','password')
-	 
-	dc_id = '700e1cab-99b2-4c30-ba8c-1d273ddba022'
-	srv_id = '700e1cab-99b2-4c30-ba8c-1d273ddba023'
+## Data Center Functions
 
-   	var jason={name:'nic11',ips:['10.2.2.11'],lan:1})
+    listDatacenters: function(callback)
+    
+    createDatacenter: function(data, callback)
+    
+    getDatacenter: function(dc_id, callback)
+    
+    updateDatacenter: function(dc_id, data, callback)
+    
+    patchDatacenter: function(dc_id, data, callback)
+    
+    deleteDatacenter: function(dc_id, callback)
 
-	libpb.createNic(dc_id,srv_id,jason)	
+## Firewall Rule Functions
 
-## Datacenter functions
+    listFWRules: function(dc_id, server_id, nic_id, callback)
+    
+    createFWRule: function(dc_id, server_id, nic_id, data, callback)
+    
+    getFWRule: function(dc_id, server_id, nic_id, fwrule_id, callback)
+    
+    updateFWRule: function(dc_id, server_id, nic_id,fwrule_id, data, callback)
+    
+    patchFWRule: function(dc_id, server_id, nic_id, fwrule_id, data, callback)
+    
+    delFWRule: function(dc_id, server_id, nic_id, fwrule_id, callback)
 
-	listDatacenters: function(callback)
+## Image Functions
 
-	createDatacenter: function(jason,callback)
+    listImages: function(callback)
 
-	getDatacenter: function(dc_id,callback)
+    getImage: function(image_id,callback)
+    
+    updateImage: function(image_id,data,callback)
+    
+    patchImage: function(image_id,data,callback)
+    
+    deleteImage: function(image_id,callback)
 
-	updateDatacenter: function(dc_id,jason,callback)
+## IP Block Functions
 
-	patchDatacenter: function(dc_id,jason,callback)
+    listIpblocks: function(callback)
+    
+    reserveIpblock: function(data,callback)
+    
+    getIpblock: function(ipblock_id,callback)
+    
+    releaseIpblock: function(ipblock_id,callback)
 
-	deleteDatacenter: function(dc_id,callback)
+## LAN Functions
 
-## Firewall Rule functions
-		
-	listFWRules : function(dc_id,srv_id,nic_id,callback)
+    listLans: function(dc_id,callback)
+    
+    createLan: function(dc_id,data,callback)
+    
+    getLan: function(dc_id,lan_id,callback)
+    
+    updateLan: function(dc_id,lan_id,data,callback)
+    
+    patchLan: function(dc_id,lan_id,data,callback)
+    
+    deleteLan: function(dc_id,lan_id,callback)
+    
+    listLanMembers: function(dc_id,lan_id,callback)
 
-	createFWRule : function(dc_id,srv_id,nic_id,jason,callback)
+## Load Balancer Functions
 
-	getFWRule : function(dc_id,srv_id,nic_id,fwrule_id,callback)
+    createLoadbalancer: function(dc_id, data, callback)
+    
+    deleteLoadbalancer: function(dc_id, lb_id, callback)
+    
+    getLoadbalancer: function(dc_id, lb_id, callback)
+    
+    listLoadbalancers: function(dc_id, callback)
+    
+    patchLoadbalancer: function(dc_id, lb_id, data, callback)
+    
+    updateLoadbalancer: function(dc_id, lb_id, data, callback)
 
-	updateFWRule  : function(dc_id,srv_id,nic_id,fwrule_id,jason,callback)
-	
-	patchFWRule : function(dc_id,srv_id,nic_id,fwrule_id,jason,callback)
-	
-	delFWRule : function(dc_id,srv_id,nic_id,fwrule_id,callback)
+## Location Functions
 
-## Image functions
+    getLocation: function(location_id, callback)
+    
+    listLocations: function(callback)
 
-	listImages : function(callback)
+## NIC Functions
 
-	getImage : function(image_id,callback)
+    createNic: function(dc_id, server_id, data, callback)
+    
+    deleteNic: function(dc_id, server_id, nic_id, callback)
+    
+    getNic: function(dc_id, server_id, nic_id, callback)
+    
+    listNics: function(dc_id, server_id, callback)
+    
+    patchNic: function(dc_id, server_id, nic_id, data, callback)
+    
+    updateNic: function(dc_id, server_id, nic_id, data, callback)
 
-	updateImage : function(image_id,jason,callback)
+## Request Functions
 
-	patchImage : function(image_id,jason,callback)
-	
-	deleteImage : function(image_id,callback)
+    listRequests: function(callback)
+    
+    getRequest: function(request_id, callback)
+    
+    statusRequest: function(request_id, callback)
 
-## Ipblock functions
+## Server Functions
 
-	listIpblocks : function(callback)
-	
-	reserveIpblock : function(jason,callback)
-	
-	getIpblock : function(ipblock_id,callback)
-	
-	releaseIpblock : function(ipblock_id,callback)
+    createServer: function(dc_id, data, callback)
+    
+    delServer: function(dc_id, server_id, callback)
+    
+    getServer: function(dc_id, server_id, callback)
+    
+    listServers: function(dc_id, callback)
+    
+    patchServer: function(dc_id, server_id, data, callback)
+    
+    updateServer: function(dc_id, server_id, data, callback)
 
-## Lan functions
+## Server Volume Functions
 
-	listLans: function(dc_id,callback)
+    listAttachedVolumes: function(dc_id, server_id, callback)
+    
+    attachVolume: function(dc_id, server_id, volume_id, callback)
+    
+    getAttachedVolume: function(dc_id, server_id, volume_id, callback)
+    
+    detachVolume: function(dc_id, server_id, volume_id, callback)
 
-	createLan: function(dc_id,jason,callback)
+## Server CDROM Functions
 
-	getLan: function(dc_id,lan_id,callback)
+    listAttachedCdroms: function(dc_id, server_id, callback)
+    
+    attachCdrom: function(dc_id, server_id, cdrom_id, callback)
+    
+    getAttachedCdrom: function(dc_id,server_id, cdrom_id, callback)
+    
+    detachCdrom: function(dc_id, server_id, cdrom_id, callback)
 
-	updateLan: function(dc_id,lan_id,jason,callback)
+## Server Command Functions
 
-	patchLan: function(dc_id,lan_id,jason,callback)
+    rebootServer: function(dc_id, server_id, callback)
+    
+    startServer: function(dc_id, server_id, callback)
+    
+    stopServer: function(dc_id, server_id, callback)    
 
-	deleteLan: function(dc_id,lan_id,callback)
+## Snapshot Functions
 
-	listLanMembers: function(dc_id,lan_id,callback)
+    deleteSnapshot: function(snapshot_id, callback)
+    
+    getSnapshot: function(snapshot_id, callback)
+    
+    listSnapshots: function(callback)
+    
+    patchSnapshot: function(snapshot_id, data, callback)
+    
+    updateSnapshot: function(snapshot_id, data, callback)
+        
+    createSnapshot: function(dc_id, volume_id, data, callback)
+    
+    restoreSnapshot: function(dc_id, volume_id, data, callback)
 
-## Loadbalancer functions
+## Volume Functions
 
-
-	createLoadbalancer: function(dc_id,jason,callback)
-	
-	deleteLoadbalancer: function(dc_id,lbal_id,callback)
-
-	getLoadbalancer: function(dc_id,lbal_id,callback)
-	
-	listLoadbalancers: function(dc_id,callback)
-
-	patchLoadbalancer: function(dc_id,lbal_id,jason,callback)
-	
-	updateLoadbalancer: function(dc_id,lbal_id,jason,callback)
-
-## Location functions
-
-	getLocation : function(location_id,callback)
-	
-	listLocations : function(callback)
-	
-## Nic functions
-
-	createNic: function(dc_id,srv_id,jason,callback)
-	
-	deleteNic: function(dc_id,srv_id,nic_id,callback)
-
-	getNic: function(dc_id,srv_id,nic_id,callback)
-	
-	listNics: function(dc_id,srv_id,callback)
-	
-	patchNic: function(dc_id,srv_id,nic_id,jason,callback)
-
-	updateNic: function(dc_id,srv_id,nic_id,jason,callback)
-	
-
-## Request functions
-
-	listRequests : function(callback)
-	
-	getRequest : function(request_id,callback)
-	
-	statusRequest: function(request_id,callback)
-	
-## Server functions
-
-	createServer: function(dc_id,jason,callback)
-	
-	delServer: function(dc_id,srv_id,callback)
-
-	getServer: function(dc_id,srv_id,callback)
-	
-	listServers: function(dc_id,callback)
-
-	patchServer: function(dc_id,srv_id,jason,callback)
-
-	updateServer: function(dc_id,srv_id,jason,callback)
-
-## Server volumes	
-
-	listAttachedVolumes : function(dc_id,srv_id,callback)
-
-	attachVolume : function(dc_id,srv_id,volume_id,callback)
-	
-	getAttachedVolume : function(dc_id,srv_id,volume_id,callback)
-	
-	detachVolume : function(dc_id,srv_id,volume_id,callback)
-
-## Server CDRoms
-
-	listAttachedCdroms : function(dc_id,srv_id,callback)
-	
-	attachCdrom : function(dc_id,srv_id,cdrom_id,callback)
-	
-	getAttachedCdrom : function(dc_id,srv_id,cdrom_id,callback)
-	
-	detachCdrom : function(dc_id,srv_id,cdrom_id,callback)
-
-## Server Commands
-
-	rebootServer: function(dc_id,srv_id,callback)
-
-	startServer: function(dc_id,srv_id,callback)
-	
-	stopServer: function(dc_id,srv_id,callback)	
-
-## Snapshot functions
-
-	deleteSnapshot : function(snapshot_id,callback)
-	
-	getSnapshot : function(snapshot_id,callback)
-	
-	listSnapshots : function(callback)
-
-	patchSnapshot : function(snapshot_id,jason,callback)
-	
-	updateSnapshot : function(snapshot_id,jason,callback)
-	
-	/** createSnapshot jason can have name and/or description **/
-		
-	createSnapshot : function(dc_id,volume_id,jason,callback)
-	
-	
-	restoreSnapshot : function(dc_id,volume_id,jason,callback)
-
-## Volume functions
-
-	listVolumes : function(dc_id,callback)
-
-	createVolume: function(dc_id,jason,callback)
-
-	getVolume : function(dc_id,volume_id,callback)
-
-	updateVolume : function(dc_id,volume_id,jason,callback)
-	
-	patchVolume : function(dc_id,volume_id,jason,callback)
-	
-	deleteVolume : function(dc_id,volume_id,callback)
-
+    listVolumes: function(dc_id, callback)
+    
+    createVolume: function(dc_id, data, callback)
+    
+    getVolume: function(dc_id, volume_id, callback)
+    
+    updateVolume: function(dc_id, volume_id, data, callback)
+    
+    patchVolume: function(dc_id, volume_id, data, callback)
+    
+    deleteVolume: function(dc_id, volume_id, callback)
