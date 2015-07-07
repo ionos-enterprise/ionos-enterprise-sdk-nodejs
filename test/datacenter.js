@@ -1,8 +1,6 @@
 var assert = require('assert');
 var pb = require('../lib/libprofitbricks');
-
-var user = 'test@profitbricks.com';
-var pass = 'testPass123';
+var helper = require('../test/testHelper');
 var dc = {};
 var dcData = {};
 
@@ -13,12 +11,12 @@ describe('Datacenter tests', function(){
         dcData = {
             "properties": {
                 "name":"Test Data Center",
-                "location":"us/las",
+                "location":"us/lasdev",
                 "description":"Test description"
             }
         };
 
-        pb.pbauth(new Buffer(user + ':' + pass, 'ascii').toString('base64'));
+        helper.authenticate(pb);
         done();
     });
 

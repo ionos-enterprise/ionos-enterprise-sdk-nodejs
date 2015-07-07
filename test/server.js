@@ -1,15 +1,13 @@
 var assert = require('assert');
 var pb = require('../lib/libprofitbricks');
-
-var user = 'test@profitbricks.com';
-var pass = 'testPass123';
+var helper = require('../test/testHelper');
 var dc = {};
 var server = {};
 var serverData =  {
     "properties": {
         "name": "Test Server",
-        "ram": 4096,
-        "cores": 4
+        "ram": 1024,
+        "cores": 2
     },
     "entities": {
         "volumes": {
@@ -26,19 +24,19 @@ var serverData =  {
 };
 
 describe('Server tests', function(){
-    this.timeout(20000);
+    this.timeout(80000);
 
     before(function(done){
         dcData = {
             "properties": {
                 "name":"Test Data Center",
-                "location":"us/las",
+                "location":"us/lasdev",
                 "description":"Test description"
             }
         };
 
-        pb.pbauth(new Buffer(user + ':' + pass, 'ascii').toString('base64'));
-
+        //pb.pbauth(new Buffer(user + ':' + pass, 'ascii').toString('base64'));
+        helper.authenticate(pb);
         pb.createDatacenter(dcData, function(error, response, body){
             assert.equal(error, null);
             dc = JSON.parse(body);
@@ -65,18 +63,22 @@ describe('Server tests', function(){
     });
 
     it('Create server', function(done){
-        pb.createServer(dc.id, serverData, function(error, response, body){
-            assert.equal(error, null);
-            assert.notEqual(response, null);
-            assert.notEqual(body, null);
-            var object = JSON.parse(body);
-            assert.notEqual(object.id, null);
-            assert.equal(object.properties.name, serverData.properties.name);
-            assert.equal(object.properties.ram, serverData.properties.ram);
-            assert.equal(object.properties.cores, serverData.properties.cores);
-            assert.notEqual(object.entities.volumes, null);
-            server = object;
-            done();
+        pb.listSnapshots(function(error, response, body){
+            snapshots = JSON.parse(body);
+            serverData.entities.volumes.items[0].properties.image = snapshots.items[1].id;
+            pb.createServer(dc.id, serverData, function(error, response, body){
+                assert.equal(error, null);
+                assert.notEqual(response, null);
+                assert.notEqual(body, null);
+                var object = JSON.parse(body);
+                assert.notEqual(object.id, null);
+                assert.equal(object.properties.name, serverData.properties.name);
+                assert.equal(object.properties.ram, serverData.properties.ram);
+                assert.equal(object.properties.cores, serverData.properties.cores);
+                assert.notEqual(object.entities.volumes, null);
+                server = object;
+                done();
+            });
         });
     });
 
@@ -95,7 +97,7 @@ describe('Server tests', function(){
                 assert.notEqual(object.items[0].entities.volumes, null);
                 done();
             });
-        }, 5000);
+        }, 10000);
     });
 
     it('Get server', function(done){
@@ -117,8 +119,8 @@ describe('Server tests', function(){
         updateData = {
             "properties":{
                 "name": "Test Server - UPDATED",
-                "ram": 8192,
-                "cores": 8
+                "ram": 2048,
+                "cores": 2
             }
         };
         pb.updateServer(dc.id, server.id, updateData, function(error, response, body){
@@ -137,8 +139,8 @@ describe('Server tests', function(){
     it('Patch server', function(done){
         patchData = {
             "name": "Test Server - PATCHED",
-            "ram": 4096,
-            "cores": 6
+            "ram": 1024,
+            "cores": 2
         };
 
         pb.patchServer(dc.id, server.id, patchData, function(error, response, body){
@@ -155,7 +157,7 @@ describe('Server tests', function(){
                     assert.equal(object.properties.cores, patchData.cores);
                     done();
                 });
-            }, 10000);
+            }, 60000);
         });
     });
 
@@ -172,7 +174,7 @@ describe('Server tests', function(){
                     assert.equal(object.messages[0].message, 'Resource does not exist');
                     done();
                 });
-            }, 10000);
+            }, 30000);
         });
     });
 });

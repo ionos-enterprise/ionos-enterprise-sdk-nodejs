@@ -2,7 +2,7 @@ var assert = require('assert');
 var pb = require('../lib/libprofitbricks');
 
 var user = 'test@profitbricks.com';
-var pass = 'testPass123';
+var pass = 'xxxxxxxxx';
 
 describe('Authentication tests', function(){
     this.timeout(20000);
