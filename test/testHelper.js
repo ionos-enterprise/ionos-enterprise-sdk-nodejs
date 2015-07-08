@@ -2,12 +2,20 @@
  * Created by ssabic on 06/07/15.
  */
 var user = 'jasmin@stackpointcloud.com';
-var pass = 'L@xu6Ef8zw';
+var pass = 'xxxxxxxxx';
 
 var helper = {};
 
 helper.authenticate = function(pb){
     pb.pbauth(new Buffer(user + ':' + pass, 'ascii').toString('base64'));
-}
+};
+
+helper.getCredentials = function(){
+    var creds = {};
+    creds.user = user;
+    creds.pass = pass;
+    return creds;
+
+};
 
 module.exports=(function(){ return helper})()
