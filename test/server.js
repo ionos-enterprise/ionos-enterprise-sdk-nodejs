@@ -3,6 +3,8 @@ var pb = require('../lib/libprofitbricks');
 var helper = require('../test/testHelper');
 var dc = {};
 var server = {};
+var volume = {};
+
 var serverData =  {
     "properties": {
         "name": "Test Server",
@@ -27,7 +29,7 @@ describe('Server tests', function(){
     this.timeout(80000);
 
     before(function(done){
-        dcData = {
+        var dcData = {
             "properties": {
                 "name":"Test Data Center",
                 "location":"us/lasdev",
@@ -35,11 +37,28 @@ describe('Server tests', function(){
             }
         };
 
+        var volumeJson = {
+            properties: {
+                name: "Test volume",
+                size: "1",
+                bus: "VIRTIO",
+                licenceType: "LINUX"
+            }
+        };
+
         helper.authenticate(pb);
         pb.createDatacenter(dcData, function(error, response, body){
             assert.equal(error, null);
             dc = JSON.parse(body);
-            done();
+            pb.createVolume(dc.id, volumeJson, function(error, response, body){
+                assert.equal(error, null);
+                assert.notEqual(response, null);
+                assert.notEqual(body, null);
+                var object = JSON.parse(body);
+                assert.notEqual(object.id, null);
+                volume = object;
+                done();
+            });
         });
     });
 
@@ -160,6 +179,69 @@ describe('Server tests', function(){
         });
     });
 
+    it('List attached volumes - empty server', function(done){
+        pb.listAttachedVolumes(dc.id, server.id, function(error, response, body){
+            assert.equal(error, null);
+            assert.notEqual(response, null);
+            assert.notEqual(body, null);
+            var object = JSON.parse(body);
+            assert.equal(object.items.length, 1);
+            done();
+        });
+    });
+
+    it('Attach volume', function(done){
+        pb.attachVolume(dc.id, server.id, volume.id, function(error, response, body){
+            assert.equal(error, null);
+            assert.notEqual(response, null);
+            assert.notEqual(body, null);
+            var object = JSON.parse(body);
+            assert.notEqual(object.id, null);
+            setTimeout(function(){
+                pb.listAttachedVolumes(dc.id, server.id, function(error, response, body){
+                    assert.equal(error, null);
+                    assert.notEqual(response, null);
+                    assert.notEqual(body, null);
+                    var object = JSON.parse(body);
+                    assert.equal(object.items.length, 2);
+                    done();
+                });
+            }, 30000);
+        });
+    });
+
+    it('Get attached volume', function(done){
+        setTimeout(function(){
+            pb.getAttachedVolume(dc.id, server.id, volume.id, function(error, response, body){
+                assert.equal(error, null);
+                assert.notEqual(response, null);
+                assert.notEqual(body, null);
+                var object = JSON.parse(body);
+                assert.equal(object.id, volume.id);
+                done();
+            });
+        }, 10000)
+    });
+
+    it('Detach volume', function(done){
+        pb.detachVolume(dc.id, server.id, volume.id, function(error, response, body){
+            assert.equal(error, null);
+            assert.notEqual(response, null);
+            assert.notEqual(body, null);
+            setTimeout(function(){
+                pb.listAttachedVolumes(dc.id, server.id, function(error, response, body){
+                    assert.equal(error, null);
+                    assert.notEqual(response, null);
+                    assert.notEqual(body, null);
+                    var object = JSON.parse(body);
+                    assert.equal(object.items.length, 1);
+                    done();
+                });
+            }, 60000);
+        });
+    });
+
+
     it('Delete server', function(done){
         pb.deleteServer(dc.id, server.id, function(error, response, body){
             assert.equal(error, null);
@@ -173,7 +255,7 @@ describe('Server tests', function(){
                     assert.equal(object.messages[0].message, 'Resource does not exist');
                     done();
                 });
-            }, 30000);
+            }, 50000);
         });
     });
 });

@@ -2,7 +2,7 @@
  * Created by ssabic on 06/07/15.
  */
 var user = 'jasmin@stackpointcloud.com';
-var pass = 'xxxxxxxxx';
+var pass = 'xxxxxxxx';
 
 var helper = {};
 
@@ -13,7 +13,7 @@ helper.authenticate = function(pb){
 helper.getCredentials = function(){
     var creds = {};
     creds.user = user;
-    creds.pass = pass;
+
     return creds;
 
 };
