@@ -35,7 +35,6 @@ describe('Server tests', function(){
             }
         };
 
-        //pb.pbauth(new Buffer(user + ':' + pass, 'ascii').toString('base64'));
         helper.authenticate(pb);
         pb.createDatacenter(dcData, function(error, response, body){
             assert.equal(error, null);
