@@ -141,7 +141,7 @@ describe('Drive tests', function(){
                     assert.equal(object.items.length, 0);
                     done();
                 });
-            }, 40000);
+            }, 50000);
         });
     });
 });

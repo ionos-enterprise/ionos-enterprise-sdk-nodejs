@@ -26,7 +26,7 @@ var serverData =  {
 };
 
 describe('Server tests', function(){
-    this.timeout(80000);
+    this.timeout(90000);
 
     before(function(done){
         var dcData = {
@@ -175,7 +175,7 @@ describe('Server tests', function(){
                     assert.equal(object.properties.cores, patchData.cores);
                     done();
                 });
-            }, 60000);
+            }, 70000);
         });
     });
 
@@ -206,7 +206,7 @@ describe('Server tests', function(){
                     assert.equal(object.items.length, 2);
                     done();
                 });
-            }, 30000);
+            }, 60000);
         });
     });
 

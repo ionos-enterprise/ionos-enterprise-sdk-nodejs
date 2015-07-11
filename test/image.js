@@ -36,10 +36,7 @@ describe('Image tests', function(){
             assert.notEqual(response, null);
             assert.notEqual(body, null);
             var object = JSON.parse(body);
-            //assert.equal(image.id, object.id);
-            assert.equal(object.httpStatus, 403);
-            assert.equal(object.messages[0].errorCode, '313');
-            assert.equal(object.messages[0].message, 'Access Denied as you dont have the permission for this operation');
+            assert.equal(image.id, object.id);
             done();
         })
     });

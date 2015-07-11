@@ -5,7 +5,7 @@ var dc = {};
 var dcData = {};
 
 describe('Datacenter tests', function(){
-    this.timeout(20000);
+    this.timeout(60000);
 
     before(function(done){
         dcData = {
@@ -47,17 +47,19 @@ describe('Datacenter tests', function(){
     });
 
     it('Get datacenter', function(done){
-        pb.getDatacenter(dc.id, function(error, response, body){
-            assert.equal(error, null);
-            assert.notEqual(response, null);
-            assert.notEqual(body, null);
-            var object = JSON.parse(body);
-            assert.equal(object.id, dc.id);
-            assert.equal(object.properties.name, dc.properties.name);
-            assert.equal(object.properties.location, dc.properties.location);
-            assert.equal(object.properties.description, dc.properties.description);
-            done();
-        });
+        setTimeout(function(){
+            pb.getDatacenter(dc.id, function(error, response, body){
+                assert.equal(error, null);
+                assert.notEqual(response, null);
+                assert.notEqual(body, null);
+                var object = JSON.parse(body);
+                assert.equal(object.id, dc.id);
+                assert.equal(object.properties.name, dc.properties.name);
+                assert.equal(object.properties.location, dc.properties.location);
+                assert.equal(object.properties.description, dc.properties.description);
+                done();
+            });
+        }, 10000);
     });
 
     it('Update datacenter', function(done){
@@ -67,17 +69,19 @@ describe('Datacenter tests', function(){
                 "description": "This datacenter is updated using node.js SDK"
             }
         };
-        pb.updateDatacenter(dc.id, updateData, function(error, response, body){
-            assert.equal(error, null);
-            assert.notEqual(response, null);
-            assert.notEqual(body, null);
-            var object = JSON.parse(body);
-            assert.equal(object.id, dc.id);
-            assert.equal(object.properties.name, updateData.properties.name);
-            assert.equal(object.properties.location, dc.properties.location);
-            assert.equal(object.properties.description, updateData.properties.description);
-            done();
-        })
+        setTimeout(function(){
+            pb.updateDatacenter(dc.id, updateData, function(error, response, body){
+                assert.equal(error, null);
+                assert.notEqual(response, null);
+                assert.notEqual(body, null);
+                var object = JSON.parse(body);
+                assert.equal(object.id, dc.id);
+                assert.equal(object.properties.name, updateData.properties.name);
+                assert.equal(object.properties.location, dc.properties.location);
+                assert.equal(object.properties.description, updateData.properties.description);
+                done();
+            });
+        }, 20000);
     });
 
     it('Patch datacenter', function(done){
@@ -85,32 +89,37 @@ describe('Datacenter tests', function(){
             "name": "Test DC - PATCHED",
             "description": "This datacenter is patched using node.js SDK"
         };
-
-        pb.patchDatacenter(dc.id, patchData, function(error, response, body){
-            assert.equal(error, null);
-            assert.notEqual(response, null);
-            assert.notEqual(body, null);
-            var object = JSON.parse(body);
-            assert.equal(object.id, dc.id);
-            assert.equal(object.properties.name, patchData.name);
-            assert.equal(object.properties.location, dc.properties.location);
-            assert.equal(object.properties.description, patchData.description);
-            done();
-        })
+        setTimeout(function(){
+            pb.patchDatacenter(dc.id, patchData, function(error, response, body){
+                assert.equal(error, null);
+                assert.notEqual(response, null);
+                assert.notEqual(body, null);
+                var object = JSON.parse(body);
+                assert.equal(object.id, dc.id);
+                assert.equal(object.properties.name, patchData.name);
+                assert.equal(object.properties.location, dc.properties.location);
+                assert.equal(object.properties.description, patchData.description);
+                done();
+            });
+        }, 20000);
     });
 
     it('Delete datacenter', function(done){
-        pb.deleteDatacenter(dc.id, function(error, response, body){
-            assert.equal(error, null);
-            assert.notEqual(response, null);
-            assert.equal(body, '');
-            pb.getDatacenter(dc.id, function(error, response, body){
+        setTimeout(function(){
+            pb.deleteDatacenter(dc.id, function(error, response, body){
                 assert.equal(error, null);
-                var object = JSON.parse(body);
-                assert.equal(object.messages[0].errorCode, '309');
-                assert.equal(object.messages[0].message, 'Resource does not exist');
-                done();
+                assert.notEqual(response, null);
+                assert.equal(body, '');
+                setTimeout(function () {
+                    pb.getDatacenter(dc.id, function(error, response, body){
+                        assert.equal(error, null);
+                        var object = JSON.parse(body);
+                        assert.equal(object.messages[0].errorCode, '309');
+                        assert.equal(object.messages[0].message, 'Resource does not exist');
+                        done();
+                    });
+                }, 20000);
             });
-        });
+        }, 5000);
     });
 });

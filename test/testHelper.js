@@ -2,7 +2,7 @@
  * Created by ssabic on 06/07/15.
  */
 var user = 'jasmin@stackpointcloud.com';
-var pass = 'xxxxxxxx';
+var pass = 'xxxxxxxxx';
 
 var helper = {};
 

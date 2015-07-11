@@ -1,6 +1,6 @@
 var assert = require('assert');
 var pb = require('../lib/libprofitbricks');
-var helper = require('../lib/testHelper');
+var helper = require('../test/testHelper');
 var creds = helper.getCredentials();
 
 describe('Authentication tests', function(){
