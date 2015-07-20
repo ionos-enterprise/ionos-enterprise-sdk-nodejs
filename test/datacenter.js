@@ -26,7 +26,7 @@ describe('Datacenter tests', function(){
             assert.notEqual(response, null);
             assert.notEqual(body, null);
             var object = JSON.parse(body);
-            assert.equal(object.items.length > 0, true)
+            assert.equal(object.items.length >= 0, true)
             done();
         });
     });

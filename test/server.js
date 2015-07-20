@@ -17,7 +17,7 @@ var serverData =  {
                 "properties": {
                     "size": 10,
                     "name": "test volume",
-                    "image": "caaffaa9-e75e-11e4-91fd-8fa3eaae9f6b",
+                    "licenceType": "UNKNOWN",
                     "bus": "VIRTIO"
                 }
             }]
@@ -81,22 +81,18 @@ describe('Server tests', function(){
     });
 
     it('Create server', function(done){
-        pb.listSnapshots(function(error, response, body){
-            snapshots = JSON.parse(body);
-            serverData.entities.volumes.items[0].properties.image = snapshots.items[1].id;
-            pb.createServer(dc.id, serverData, function(error, response, body){
-                assert.equal(error, null);
-                assert.notEqual(response, null);
-                assert.notEqual(body, null);
-                var object = JSON.parse(body);
-                assert.notEqual(object.id, null);
-                assert.equal(object.properties.name, serverData.properties.name);
-                assert.equal(object.properties.ram, serverData.properties.ram);
-                assert.equal(object.properties.cores, serverData.properties.cores);
-                assert.notEqual(object.entities.volumes, null);
-                server = object;
-                done();
-            });
+        pb.createServer(dc.id, serverData, function(error, response, body){
+            assert.equal(error, null);
+            assert.notEqual(response, null);
+            assert.notEqual(body, null);
+            var object = JSON.parse(body);
+            assert.notEqual(object.id, null);
+            assert.equal(object.properties.name, serverData.properties.name);
+            assert.equal(object.properties.ram, serverData.properties.ram);
+            assert.equal(object.properties.cores, serverData.properties.cores);
+            assert.notEqual(object.entities.volumes, null);
+            server = object;
+            done();
         });
     });
 

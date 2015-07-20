@@ -32,7 +32,7 @@ describe('Drive tests', function(){
                         "properties": {
                             "size": 1,
                             "name": "Test volume",
-                            "image": "caaffaa9-e75e-11e4-91fd-8fa3eaae9f6b",
+                            "licenceType": "UNKNOWN",
                             "bus": "VIRTIO"
                         }
                     }]
@@ -44,30 +44,26 @@ describe('Drive tests', function(){
         pb.createDatacenter(dcData, function(error, response, body){
             assert.equal(error, null);
             dc = JSON.parse(body);
-            pb.listSnapshots(function(error, response, body){
-                snapshots = JSON.parse(body);
-                serverData.entities.volumes.items[0].properties.image = snapshots.items[1].id;
-                pb.createServer(dc.id, serverData, function(error, response, body){
+            pb.createServer(dc.id, serverData, function(error, response, body){
+                assert.equal(error, null);
+                assert.notEqual(response, null);
+                assert.notEqual(body, null);
+                var object = JSON.parse(body);
+                assert.notEqual(object.id, null);
+                server = object;
+                pb.listImages(function(error, response, body){
                     assert.equal(error, null);
                     assert.notEqual(response, null);
                     assert.notEqual(body, null);
                     var object = JSON.parse(body);
-                    assert.notEqual(object.id, null);
-                    server = object;
-                    pb.listImages(function(error, response, body){
-                        assert.equal(error, null);
-                        assert.notEqual(response, null);
-                        assert.notEqual(body, null);
-                        var object = JSON.parse(body);
-                        assert.notEqual(object.items.length, 0);
-                        for (var i = 0; i < object.items.length; i++) {
-                            if (object.items[i].properties.imageType == 'CDROM' && object.items[i].properties.location == 'us/lasdev') {
-                                drive = object.items[i];
-                                done();
-                                break;
-                            };
+                    assert.notEqual(object.items.length, 0);
+                    for (var i = 0; i < object.items.length; i++) {
+                        if (object.items[i].properties.imageType == 'CDROM' && object.items[i].properties.location == 'us/lasdev') {
+                            drive = object.items[i];
+                            done();
+                            break;
                         };
-                    });
+                    };
                 });
             });
         });

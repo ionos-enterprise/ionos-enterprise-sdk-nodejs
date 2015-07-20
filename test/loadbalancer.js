@@ -166,7 +166,7 @@ describe('Loadbalancer tests', function(){
                         "properties": {
                             "size": 10,
                             "name": "test volume",
-                            "image": "caaffaa9-e75e-11e4-91fd-8fa3eaae9f6b",
+                            "licenceType": "UNKNOWN",
                             "bus": "VIRTIO"
                         }
                     }]
@@ -183,47 +183,43 @@ describe('Loadbalancer tests', function(){
             }
         };
 
-        pb.listSnapshots(function(error, response, body){
-            snapshots = JSON.parse(body);
-            serverData.entities.volumes.items[0].properties.image = snapshots.items[1].id;
-            pb.createServer(dc.id, serverData, function(error, response, body){
-                assert.equal(error, null);
-                assert.notEqual(response, null);
-                assert.notEqual(body, null);
-                var object = JSON.parse(body);
-                assert.notEqual(object.id, null);
-                server = object;
-                setTimeout(function(){
-                    pb.createNic(dc.id, server.id, nicJson, function(error, response, body){
-                        assert.equal(error, null);
-                        assert.notEqual(response, null);
-                        assert.notEqual(body, null);
-                        var object = JSON.parse(body);
-                        assert.notEqual(object.id, null);
-                        nic = object;
-                        setTimeout(function(){
-                            pb.associateNics(dc.id, lb.id, {"id": nic.id}, function(error, response, body){
-                                assert.equal(error, null);
-                                assert.notEqual(response, null);
-                                assert.notEqual(body, null);
-                                var object = JSON.parse(body);
-                                assert.equal(object.id, nic.id);
-                                setTimeout(function(){
-                                    pb.listBalancedNics(dc.id, lb.id, function(error, response, body){
-                                        assert.equal(error, null);
-                                        assert.notEqual(response, null);
-                                        assert.notEqual(body, null);
-                                        var object = JSON.parse(body);
-                                        assert.equal(object.id, lb.id + "/balancednics");
-                                        assert.equal(object.items.length, 1);
-                                        done();
-                                    });
-                                }, 30000);
-                            });
-                        }, 40000);
-                    });
-                }, 10000);
-            });
+        pb.createServer(dc.id, serverData, function(error, response, body){
+            assert.equal(error, null);
+            assert.notEqual(response, null);
+            assert.notEqual(body, null);
+            var object = JSON.parse(body);
+            assert.notEqual(object.id, null);
+            server = object;
+            setTimeout(function(){
+                pb.createNic(dc.id, server.id, nicJson, function(error, response, body){
+                    assert.equal(error, null);
+                    assert.notEqual(response, null);
+                    assert.notEqual(body, null);
+                    var object = JSON.parse(body);
+                    assert.notEqual(object.id, null);
+                    nic = object;
+                    setTimeout(function(){
+                        pb.associateNics(dc.id, lb.id, {"id": nic.id}, function(error, response, body){
+                            assert.equal(error, null);
+                            assert.notEqual(response, null);
+                            assert.notEqual(body, null);
+                            var object = JSON.parse(body);
+                            assert.equal(object.id, nic.id);
+                            setTimeout(function(){
+                                pb.listBalancedNics(dc.id, lb.id, function(error, response, body){
+                                    assert.equal(error, null);
+                                    assert.notEqual(response, null);
+                                    assert.notEqual(body, null);
+                                    var object = JSON.parse(body);
+                                    assert.equal(object.id, lb.id + "/balancednics");
+                                    assert.equal(object.items.length, 1);
+                                    done();
+                                });
+                            }, 30000);
+                        });
+                    }, 40000);
+                });
+            }, 10000);
         });
     });
 
