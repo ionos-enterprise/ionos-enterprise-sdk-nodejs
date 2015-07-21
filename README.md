@@ -338,3 +338,12 @@ The sample below shows you how to add a second NIC to an existing server:
     patchVolume: function(dc_id, volume_id, data, callback)
     
     deleteVolume: function(dc_id, volume_id, callback)
+
+## Additional Documentation and Support
+
+You can find additional examples in our repo [here]. If you find any issues, please let us know via the DevOps Central community or GitHub's issue system and we'll check it out. 
+
+## Conclusion
+
+We touched on only a few ways you can interact with the libprofitbricks API using Node.js. 
+If you have any other question, ping us in the community. 
