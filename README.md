@@ -104,7 +104,7 @@ The following code illustrates how you can update the cores and memory of a serv
     var datacenter_id = '1234567-1234-1234-1234-123456789012'
     var server_id = '1234567-1234-1234-1234-123456789012'
     
-    var data = { cores: '16', ram: '2048' } 
+    var data = { cores: 16, ram: 2048 }
     
     libpb.updateServer(datacenter_id, server_id, data, callback)
 
