@@ -8,6 +8,7 @@ The ProfitBricks Client Library for Node.js allows interaction with the ProfitBr
 * [Authenticating](#authenticating)
 * [How to: Create a Data Center](#how-to-create-a-data-center)
 * [How to: Delete a Data Center](#how-to-delete-a-data-center)
+* [How to: Create a Server](#how-to-create-a-server)
 * [How to: Update Cores, Memory, and Disk](#how-to-update-cores-memory-and-disk)
 * [How to: List Servers, Volumes, and Data Centers](#how-to-list-servers-volumes-and-data-centers)
 * [How to: Create Additional Network Interfaces](#how-to-create-additional-network-interfaces)
@@ -61,7 +62,9 @@ You will need a data center before you can create anything else. Like the server
 
 To create a simple one you would do this: 
 
-    var libpb=require('libprofitbricks')
+    var libpb = require('libprofitbricks')
+
+    libpb.setauth('username', 'password')
     
     dcData = {
         "properties": {
@@ -83,13 +86,31 @@ You can find more detailed information about data center creation [here](https:/
 
 You will want to exercise a bit of caution here. Removing a data center will **destroy** all objects contained within that data center including servers, volumes, snapshots, and so forth. 
 
-    var libpb = require('libprofitbricks')
-
-    libpb.setauth('username', 'password')
-     
     datacenter_id = '700e1cab-99b2-4c30-ba8c-1d273ddba022'
-        
+
     libpb.deleteDatacenter(datacenter_id, callback)
+
+## How to: Create a Server
+
+The following example shows you how to create a new server in the virtual data center created above.
+
+    var datacenter_id = '1234567-1234-1234-1234-123456789012'
+
+    var data = {
+        "properties": {
+            "name": "Test Server",
+            "ram": 2048,
+            "cores": 1
+        }
+    }
+
+    libpb.createServer(datacenter_id, data, function(error, response, body) {
+        console.log(body)
+        console.log(error)
+        console.log(response)
+    })
+
+One of the unique features of the ProfitBricks platform when compared with the other providers is that it allows you to define your own settings for cores, memory, and disk size without being tied to a particular size.
 
 ## How to: Update Cores, Memory, and Disk
 
@@ -97,14 +118,10 @@ ProfitBricks allows users to dynamically update cores, memory, and disk independ
 
 The following code illustrates how you can update the cores and memory of a server: 
 
-    var libpb = require('libprofitbricks')
-    
-    libpb.setauth('username', 'password')
-     
     var datacenter_id = '1234567-1234-1234-1234-123456789012'
     var server_id = '1234567-1234-1234-1234-123456789012'
     
-    var data = { cores: 16, ram: 2048 }
+    var data = { cores: 16, ram: 4096 }
     
     libpb.updateServer(datacenter_id, server_id, data, callback)
 
@@ -112,10 +129,6 @@ The following code illustrates how you can update the cores and memory of a serv
 
 Listing resources is fairly straight forward. To view all data centers:
 
-    var libpb = require('libprofitbricks')
-    
-    libpb.setauth('username', 'password')
-    
     libpb.listDatacenters(function(error, response, body) {
         console.log(body)
         console.log(error)
@@ -124,20 +137,12 @@ Listing resources is fairly straight forward. To view all data centers:
 
 Listing servers within a data center:
 
-    var libpb = require('libprofitbricks')
-    
-    libpb.setauth('username', 'password')
-    
     var datacenter_id = '700e1cab-99b2-4c30-ba8c-1d273ddba022'
     
     libpb.listServers(datacenter_id, callback)
 
 Listing volumes within a data center: 
 
-    var libpb = require('libprofitbricks')
-    
-    libpb.setauth('username', 'password')
-    
     var datacenter_id = '700e1cab-99b2-4c30-ba8c-1d273ddba022'
     
     libpb.listVolumes(datacenter_id, callback)
@@ -148,14 +153,10 @@ The ProfitBricks platform supports adding multiple NICs to a server. These NICs 
 
 The sample below shows you how to add a second NIC to an existing server: 
 
-    var libpb = require('libprofitbricks')
-    
-    libpb.setauth('username', 'password')
-    
     dc_id = '700e1cab-99b2-4c30-ba8c-1d273ddba022'
     server_id = '700e1cab-99b2-4c30-ba8c-1d273ddba023'
     
-    var data = {name: 'nic11', ips: ['10.2.2.11'], lan: 1}
+    var data = { name: 'nic11', ips: ['10.2.2.11'], lan: 1 }
     
     libpb.createNic(dc_id, server_id, data)
 
@@ -341,9 +342,4 @@ The sample below shows you how to add a second NIC to an existing server:
 
 ## Additional Documentation and Support
 
-You can find additional examples in our repo [here]. If you find any issues, please let us know via the DevOps Central community or GitHub's issue system and we'll check it out. 
-
-## Conclusion
-
-We touched on only a few ways you can interact with the libprofitbricks API using Node.js. 
-If you have any other question, ping us in the community. 
+You can find additional examples in our repo [here](https://github.com/profitbricks/profitbricks-sdk-nodejs). If you find any issues, please let us know via the DevOps Central community or GitHub's issue system and we will check it out.

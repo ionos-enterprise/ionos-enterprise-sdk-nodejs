@@ -1,8 +1,8 @@
 /**
  * Created by ssabic on 06/07/15.
  */
-var user = 'username@example.com';
-var pass = 'xxxxxxxxx';
+var user = 'username';
+var pass = 'password';
 
 var helper = {};
 
