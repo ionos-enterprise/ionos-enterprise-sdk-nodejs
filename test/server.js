@@ -18,7 +18,8 @@ var serverData =  {
                     "size": 10,
                     "name": "test volume",
                     "licenceType": "UNKNOWN",
-                    "bus": "VIRTIO"
+                    "bus": "VIRTIO",
+                    "type" : "HDD"
                 }
             }]
         }
@@ -42,7 +43,8 @@ describe('Server tests', function(){
                 name: "Test volume",
                 size: "1",
                 bus: "VIRTIO",
-                licenceType: "LINUX"
+                licenceType: "LINUX",
+                type:"HDD"
             }
         };
 

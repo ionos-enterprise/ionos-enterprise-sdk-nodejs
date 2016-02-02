@@ -31,7 +31,8 @@ describe('Snapshot tests', function(){
                 name: "Test volume",
                 size: "1",
                 bus: "VIRTIO",
-                licenceType: "LINUX"
+                licenceType: "LINUX",
+                type : "HDD"
             }
         };
 
@@ -144,7 +145,8 @@ describe('Snapshot tests', function(){
                 name: "Test volume 2",
                 size: "1",
                 bus: "VIRTIO",
-                licenceType: "LINUX"
+                licenceType: "LINUX",
+                type : "HDD"
             }
         };
 

@@ -47,7 +47,7 @@ describe('Request tests', function(){
             var object = JSON.parse(body);
             assert.equal(object.id, req.id + '/status');
             assert.equal(object.type, "request-status");
-            assert.equal(object.metadata.status, "DONE");
+            assert.notEqual(object.metadata.status, null);
             done();
         });
     });

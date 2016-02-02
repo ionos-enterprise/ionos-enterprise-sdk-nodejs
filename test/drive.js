@@ -33,7 +33,8 @@ describe('Drive tests', function(){
                             "size": 1,
                             "name": "Test volume",
                             "licenceType": "UNKNOWN",
-                            "bus": "VIRTIO"
+                            "bus": "VIRTIO",
+                            "type": "HDD"
                         }
                     }]
                 }
