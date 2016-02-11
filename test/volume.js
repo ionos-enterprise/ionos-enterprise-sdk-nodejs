@@ -12,7 +12,8 @@ var volumeJson = {
         name: "Test volume",
         size: "1",
         bus: "VIRTIO",
-        licenceType: "LINUX"
+        licenceType: "LINUX",
+        type : "HDD"
     }
 };
 

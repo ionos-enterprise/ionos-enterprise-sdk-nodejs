@@ -167,7 +167,8 @@ describe('Loadbalancer tests', function(){
                             "size": 10,
                             "name": "test volume",
                             "licenceType": "UNKNOWN",
-                            "bus": "VIRTIO"
+                            "bus": "VIRTIO",
+                            "type" : "HDD"
                         }
                     }]
                 }
