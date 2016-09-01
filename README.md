@@ -100,7 +100,8 @@ The following example shows you how to create a new server in the virtual data c
         "properties": {
             "name": "Test Server",
             "ram": 2048,
-            "cores": 1
+            "cores": 1,
+            "cpuFamily": "AMD_OPTERON"
         }
     }
 
