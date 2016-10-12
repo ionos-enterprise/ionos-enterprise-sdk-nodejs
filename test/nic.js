@@ -14,7 +14,8 @@ var nicJson = {
         "name": "Test NIC",
         "ips": ["127.0.0.0"],
         "dhcp": "true",
-        "lan": "1"
+        "lan": "1",
+        "nat": false
     },
     "entities": {
         "firewallrules": {

@@ -13,7 +13,8 @@ var volumeJson = {
         size: "1",
         bus: "VIRTIO",
         licenceType: "LINUX",
-        type : "HDD"
+        type : "HDD",
+        availablityZone : "ZONE_3"
     }
 };
 
