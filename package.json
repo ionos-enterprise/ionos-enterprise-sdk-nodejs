@@ -1,6 +1,6 @@
 {
   "name": "libprofitbricks",
-  "version": "1.6.23",
+  "version": "3.0.2",
   "description": "The ProfitBricks Library for Node and Io",
   "main": "./lib/index.js",
   "scripts": {
@@ -35,6 +35,5 @@
     "Stack Point Cloud",
     "libProfitBricks",
     "Profit Bricks"
-
   ]
 }
