@@ -5,7 +5,7 @@ var dc = {};
 var server = {};
 var volume = {};
 
-var serverData =  {
+var serverData = {
     "properties": {
         "name": "Test Server",
         "ram": 1024,
@@ -19,22 +19,22 @@ var serverData =  {
                     "name": "test volume",
                     "licenceType": "UNKNOWN",
                     "bus": "VIRTIO",
-                    "type" : "HDD"
+                    "type": "HDD"
                 }
             }]
         }
     }
 };
 
-describe('Server tests', function(){
+describe('Server tests', function() {
     this.timeout(90000);
 
-    before(function(done){
+    before(function(done) {
         var dcData = {
             "properties": {
-                "name":"Test Data Center",
-                "location":"us/lasdev",
-                "description":"Test description"
+                "name": "Test Data Center",
+                "location": "us/las",
+                "description": "Test description"
             }
         };
 
@@ -44,15 +44,15 @@ describe('Server tests', function(){
                 size: "1",
                 bus: "VIRTIO",
                 licenceType: "LINUX",
-                type:"HDD"
+                type: "HDD"
             }
         };
 
         helper.authenticate(pb);
-        pb.createDatacenter(dcData, function(error, response, body){
+        pb.createDatacenter(dcData, function(error, response, body) {
             assert.equal(error, null);
             dc = JSON.parse(body);
-            pb.createVolume(dc.id, volumeJson, function(error, response, body){
+            pb.createVolume(dc.id, volumeJson, function(error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -64,26 +64,28 @@ describe('Server tests', function(){
         });
     });
 
-    after(function(done){
-        pb.deleteDatacenter(dc.id, function(error, response, body){
+    after(function(done) {
+        pb.deleteDatacenter(dc.id, function(error, response, body) {
             assert.equal(error, null);
             done();
         });
     });
 
-    it('List servers - empty datacenter', function(done){
-        pb.listServers(dc.id, function(error, response, body){
-            assert.equal(error, null);
-            assert.notEqual(response, null);
-            assert.notEqual(body, null);
-            var object = JSON.parse(body);
-            assert.equal(object.items.length, 0);
-            done();
+    it('List servers - empty datacenter', function(done) {
+        setTimeout(function() {
+            pb.listServers(dc.id, function(error, response, body) {
+                assert.equal(error, null);
+                assert.notEqual(response, null);
+                assert.notEqual(body, null);
+                var object = JSON.parse(body);
+                assert.equal(object.items.length, 0);
+                done();
+            }, 30000);
         });
     });
 
-    it('Create server', function(done){
-        pb.createServer(dc.id, serverData, function(error, response, body){
+    it('Create server', function(done) {
+        pb.createServer(dc.id, serverData, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -98,9 +100,9 @@ describe('Server tests', function(){
         });
     });
 
-    it('List servers', function(done){
-        setTimeout(function(){
-            pb.listServers(dc.id, function(error, response, body){
+    it('List servers', function(done) {
+        setTimeout(function() {
+            pb.listServers(dc.id, function(error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -113,11 +115,11 @@ describe('Server tests', function(){
                 assert.notEqual(object.items[0].entities.volumes, null);
                 done();
             });
-        }, 10000);
+        }, 30000);
     });
 
-    it('Get server', function(done){
-        pb.getServer(dc.id, server.id, function(error, response, body){
+    it('Get server', function(done) {
+        pb.getServer(dc.id, server.id, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -131,15 +133,15 @@ describe('Server tests', function(){
         });
     });
 
-    it('Update server', function(done){
+    it('Update server', function(done) {
         updateData = {
-            "properties":{
+            "properties": {
                 "name": "Test Server - UPDATED",
                 "ram": 2048,
                 "cores": 2
             }
         };
-        pb.updateServer(dc.id, server.id, updateData, function(error, response, body){
+        pb.updateServer(dc.id, server.id, updateData, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -152,21 +154,21 @@ describe('Server tests', function(){
         });
     });
 
-    it('Patch server', function(done){
+    it('Patch server', function(done) {
         patchData = {
             "name": "Test Server - PATCHED",
             "ram": 1024,
             "cores": 2
         };
 
-        pb.patchServer(dc.id, server.id, patchData, function(error, response, body){
+        pb.patchServer(dc.id, server.id, patchData, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
             var object = JSON.parse(body);
             assert.equal(object.id, server.id);
-            setTimeout(function(){
-                pb.getServer(dc.id, server.id, function(error, response, body){
+            setTimeout(function() {
+                pb.getServer(dc.id, server.id, function(error, response, body) {
                     var object = JSON.parse(body);
                     assert.equal(object.properties.name, patchData.name);
                     assert.equal(object.properties.ram, patchData.ram);
@@ -177,8 +179,8 @@ describe('Server tests', function(){
         });
     });
 
-    it('List attached volumes - empty server', function(done){
-        pb.listAttachedVolumes(dc.id, server.id, function(error, response, body){
+    it('List attached volumes - empty server', function(done) {
+        pb.listAttachedVolumes(dc.id, server.id, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -188,15 +190,15 @@ describe('Server tests', function(){
         });
     });
 
-    it('Attach volume', function(done){
-        pb.attachVolume(dc.id, server.id, volume.id, function(error, response, body){
+    it('Attach volume', function(done) {
+        pb.attachVolume(dc.id, server.id, volume.id, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
             var object = JSON.parse(body);
             assert.notEqual(object.id, null);
-            setTimeout(function(){
-                pb.listAttachedVolumes(dc.id, server.id, function(error, response, body){
+            setTimeout(function() {
+                pb.listAttachedVolumes(dc.id, server.id, function(error, response, body) {
                     assert.equal(error, null);
                     assert.notEqual(response, null);
                     assert.notEqual(body, null);
@@ -208,9 +210,9 @@ describe('Server tests', function(){
         });
     });
 
-    it('Get attached volume', function(done){
-        setTimeout(function(){
-            pb.getAttachedVolume(dc.id, server.id, volume.id, function(error, response, body){
+    it('Get attached volume', function(done) {
+        setTimeout(function() {
+            pb.getAttachedVolume(dc.id, server.id, volume.id, function(error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -221,13 +223,13 @@ describe('Server tests', function(){
         }, 10000)
     });
 
-    it('Detach volume', function(done){
-        pb.detachVolume(dc.id, server.id, volume.id, function(error, response, body){
+    it('Detach volume', function(done) {
+        pb.detachVolume(dc.id, server.id, volume.id, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
-            setTimeout(function(){
-                pb.listAttachedVolumes(dc.id, server.id, function(error, response, body){
+            setTimeout(function() {
+                pb.listAttachedVolumes(dc.id, server.id, function(error, response, body) {
                     assert.equal(error, null);
                     assert.notEqual(response, null);
                     assert.notEqual(body, null);
@@ -240,20 +242,26 @@ describe('Server tests', function(){
     });
 
 
-    it('Delete server', function(done){
-        pb.deleteServer(dc.id, server.id, function(error, response, body){
+    it('Delete server', function(done) {
+        pb.deleteServer(dc.id, server.id, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.equal(body, '');
-            setTimeout(function(){
-                pb.getServer(dc.id, server.id, function(error, response, body){
+            setTimeout(function() {
+                pb.getServer(dc.id, server.id, function(error, response, body) {
                     assert.equal(error, null);
                     var object = JSON.parse(body);
                     assert.equal(object.messages[0].errorCode, '309');
                     assert.equal(object.messages[0].message, 'Resource does not exist');
-                    done();
                 });
+                setTimeout(function() {
+                    pb.deleteDatacenter(dc.id, function(error, response, body) {
+                        assert.equal(error, null);
+                        done();
+                    });
+                }, 1000);
             }, 50000);
+
         });
     });
 });

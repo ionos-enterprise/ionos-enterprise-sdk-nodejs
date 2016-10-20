@@ -11,7 +11,7 @@ describe('Datacenter tests', function(){
         dcData = {
             "properties": {
                 "name":"Test Data Center",
-                "location":"us/lasdev",
+                "location":"us/las",
                 "description":"Test description"
             }
         };
@@ -59,7 +59,7 @@ describe('Datacenter tests', function(){
                 assert.equal(object.properties.description, dc.properties.description);
                 done();
             });
-        }, 10000);
+        }, 1000);
     });
 
     it('Update datacenter', function(done){
@@ -81,7 +81,7 @@ describe('Datacenter tests', function(){
                 assert.equal(object.properties.description, updateData.properties.description);
                 done();
             });
-        }, 20000);
+        }, 2000);
     });
 
     it('Patch datacenter', function(done){
@@ -101,7 +101,7 @@ describe('Datacenter tests', function(){
                 assert.equal(object.properties.description, patchData.description);
                 done();
             });
-        }, 20000);
+        }, 10000);
     });
 
     it('Delete datacenter', function(done){
@@ -113,12 +113,13 @@ describe('Datacenter tests', function(){
                 setTimeout(function () {
                     pb.getDatacenter(dc.id, function(error, response, body){
                         assert.equal(error, null);
+                        console.log(body);
                         var object = JSON.parse(body);
                         assert.equal(object.messages[0].errorCode, '309');
                         assert.equal(object.messages[0].message, 'Resource does not exist');
                         done();
                     });
-                }, 20000);
+                }, 2000);
             });
         }, 5000);
     });

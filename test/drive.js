@@ -15,7 +15,7 @@ describe('Drive tests', function(){
         dcData = {
             "properties": {
                 "name":"Test Data Center",
-                "location":"us/lasdev",
+                "location":"us/las",
                 "description":"Test description"
             }
         };
@@ -59,7 +59,7 @@ describe('Drive tests', function(){
                     var object = JSON.parse(body);
                     assert.notEqual(object.items.length, 0);
                     for (var i = 0; i < object.items.length; i++) {
-                        if (object.items[i].properties.imageType == 'CDROM' && object.items[i].properties.location == 'us/lasdev') {
+                        if (object.items[i].properties.imageType == 'CDROM' && object.items[i].properties.location == 'us/las') {
                             drive = object.items[i];
                             done();
                             break;

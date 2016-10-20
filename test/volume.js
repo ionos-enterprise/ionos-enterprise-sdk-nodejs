@@ -14,7 +14,7 @@ var volumeJson = {
         bus: "VIRTIO",
         licenceType: "LINUX",
         type : "HDD",
-        availablityZone : "ZONE_3"
+        availabilityZone : "ZONE_3"
     }
 };
 
@@ -25,7 +25,7 @@ describe('Volume tests', function(){
         var dcData = {
             "properties": {
                 "name":"Test Data Center",
-                "location":"us/lasdev",
+                "location":"us/las",
                 "description":"Test description"
             }
         };
@@ -109,7 +109,7 @@ describe('Volume tests', function(){
 
     it('Patch volume', function(done){
         var volumePatch = {
-            "name": "Test volume - patched"
+            "name": "Test volume - updated"
         };
         pb.patchVolume(dc.id, volume.id, volumePatch, function(error, response, body){
             assert.equal(error, null);

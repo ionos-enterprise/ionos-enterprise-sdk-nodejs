@@ -1,8 +1,8 @@
 /**
  * Created by ssabic on 06/07/15.
  */
-var user = 'username';
-var pass = 'password';
+var user = process.env.PROFITBRICKS_USERNAME;
+var pass = process.env.PROFITBRICKS_PASSWORD;
 
 var helper = {};
 

@@ -14,15 +14,15 @@ var snapshotJson = {
     "description": "Test snapshot description"
 };
 
-describe('Snapshot tests', function(){
+describe('Snapshot tests', function() {
     this.timeout(80000);
 
-    before(function(done){
+    before(function(done) {
         var dcData = {
             "properties": {
-                "name":"Test Data Center",
-                "location":"us/lasdev",
-                "description":"Test description"
+                "name": "Test Data Center",
+                "location": "us/las",
+                "description": "Test description"
             }
         };
 
@@ -32,15 +32,15 @@ describe('Snapshot tests', function(){
                 size: "1",
                 bus: "VIRTIO",
                 licenceType: "LINUX",
-                type : "HDD"
+                type: "HDD"
             }
         };
 
         helper.authenticate(pb);
-        pb.createDatacenter(dcData, function(error, response, body){
+        pb.createDatacenter(dcData, function(error, response, body) {
             assert.equal(error, null);
             dc = JSON.parse(body);
-            pb.createVolume(dc.id, volumeJson, function(error, response, body){
+            pb.createVolume(dc.id, volumeJson, function(error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -52,15 +52,15 @@ describe('Snapshot tests', function(){
         });
     });
 
-    after(function(done){
-        pb.deleteDatacenter(dc.id, function(error, response, body){
+    after(function(done) {
+        pb.deleteDatacenter(dc.id, function(error, response, body) {
             assert.equal(error, null);
             done();
         });
     });
 
-    it('List snapshots - empty datacenter', function(done){
-        pb.listSnapshots(function(error, response, body){
+    it('List snapshots - empty datacenter', function(done) {
+        pb.listSnapshots(function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -70,9 +70,9 @@ describe('Snapshot tests', function(){
         });
     });
 
-    it('Create snapshot', function(done){
-        setTimeout(function(){
-            pb.createSnapshot(dc.id, volume.id, snapshotJson, function(error, response, body){
+    it('Create snapshot', function(done) {
+        setTimeout(function() {
+            pb.createSnapshot(dc.id, volume.id, snapshotJson, function(error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -80,8 +80,8 @@ describe('Snapshot tests', function(){
                 assert.notEqual(object.id, null);
                 assert.equal(object.properties.name, snapshotJson.name);
                 snapshot = object;
-                setTimeout(function(){
-                    pb.listSnapshots(function(error, response, body){
+                setTimeout(function() {
+                    pb.listSnapshots(function(error, response, body) {
                         assert.equal(error, null);
                         assert.notEqual(response, null);
                         assert.notEqual(body, null);
@@ -94,8 +94,8 @@ describe('Snapshot tests', function(){
         }, 20000);
     });
 
-    it('Get snapshots', function(done){
-        pb.getSnapshot(snapshot.id, function(error, response, body){
+    it('Get snapshots', function(done) {
+        pb.getSnapshot(snapshot.id, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -106,13 +106,13 @@ describe('Snapshot tests', function(){
         });
     });
 
-    it('Update snapshot', function(done){
+    it('Update snapshot', function(done) {
         var snapshotUpdate = {
-            "properties":{
+            "properties": {
                 "name": "Test snapshot - updated"
             }
         };
-        pb.updateSnapshot(snapshot.id, snapshotUpdate, function(error, response, body){
+        pb.updateSnapshot(snapshot.id, snapshotUpdate, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -123,11 +123,11 @@ describe('Snapshot tests', function(){
         });
     });
 
-    it('Patch snapshot', function(done){
+    it('Patch snapshot', function(done) {
         var snapshotPatch = {
             "name": "Test snapshot - patched"
         };
-        pb.patchSnapshot(snapshot.id, snapshotPatch, function(error, response, body){
+        pb.patchSnapshot(snapshot.id, snapshotPatch, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -138,7 +138,7 @@ describe('Snapshot tests', function(){
         });
     });
 
-    it('Restore snapshot', function(done){
+    it('Restore snapshot', function(done) {
         var newVolume = {};
         var volumeJson2 = {
             properties: {
@@ -146,19 +146,21 @@ describe('Snapshot tests', function(){
                 size: "1",
                 bus: "VIRTIO",
                 licenceType: "LINUX",
-                type : "HDD"
+                type: "HDD"
             }
         };
 
-        pb.createVolume(dc.id, volumeJson2, function(error, response, body){
+        pb.createVolume(dc.id, volumeJson2, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
             var object = JSON.parse(body);
             assert.notEqual(object.id, null);
             newVolume = object;
-            setTimeout(function(){
-                pb.restoreSnapshot(dc.id, newVolume.id, {"snapshotId": snapshot.id}, function(error, response, body){
+            setTimeout(function() {
+                pb.restoreSnapshot(dc.id, newVolume.id, {
+                    "snapshotId": snapshot.id
+                }, function(error, response, body) {
                     assert.equal(error, null);
                     assert.notEqual(response, null);
                     assert.equal(body, "");
@@ -170,14 +172,19 @@ describe('Snapshot tests', function(){
         });
     });
 
-    it('Delete snapshot', function(done){
-        setTimeout(function(){
-            pb.deleteSnapshot(snapshot.id, function(error, response, body){
+    it('Delete snapshot', function(done) {
+        setTimeout(function() {
+            pb.deleteSnapshot(snapshot.id, function(error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.equal(body, "");
-                done();
             });
+            setTimeout(function() {
+                pb.deleteDatacenter(dc.id, function(error, response, body) {
+                    assert.equal(error, null);
+                    done();
+                });
+            }, 60000);
         }, 60000);
     });
 });

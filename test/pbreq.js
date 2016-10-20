@@ -18,13 +18,13 @@ describe('pbreq tests', function(){
 
     it('Set full header', function(done){
         pb.fullheader();
-        assert.equal(pb.options.headers['Content-Type'], 'application/vnd.profitbricks.resource+json');
+        assert.equal(pb.options.headers['Content-Type'], 'application/json');
         done();
     });
 
     it('Set patch header', function(done){
         pb.patchheader();
-        assert.equal(pb.options.headers['Content-Type'], 'application/vnd.profitbricks.partial-properties+json');
+        assert.equal(pb.options.headers['Content-Type'], 'application/json');
         done();
     });
 
@@ -43,7 +43,7 @@ describe('pbreq tests', function(){
 
     it('Make URL', function(done){
         var url = pb.mk_url([ "datacenters", "123456789", "servers", "000000000", "cdroms", "111111111" ], function(data){});
-        assert.equal(url, 'https://api.profitbricks.com/rest/v2/datacenters/123456789/servers/000000000/cdroms/111111111');
+        assert.equal(url, 'https://api.profitbricks.com/cloudapi/v3/datacenters/123456789/servers/000000000/cdroms/111111111');
         done();
     });
 
@@ -52,8 +52,8 @@ describe('pbreq tests', function(){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
-            assert.equal(pb.options.url, 'https://api.profitbricks.com/rest/v2/datacenters/123456789/servers/000000000/cdroms/111111111');
-            assert.equal(pb.options.headers['Content-Type'], 'application/vnd.profitbricks.resource+json');
+            assert.equal(pb.options.url, 'https://api.profitbricks.com/cloudapi/v3/datacenters/123456789/servers/000000000/cdroms/111111111');
+            assert.equal(pb.options.headers['Content-Type'], 'application/json');
             assert.equal(response.request.method, "DELETE");
             done();
         });
@@ -64,8 +64,8 @@ describe('pbreq tests', function(){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
-            assert.equal(pb.options.url, 'https://api.profitbricks.com/rest/v2/datacenters/123456789/servers/000000000/cdroms/111111111?depth=1');
-            assert.equal(pb.options.headers['Content-Type'], 'application/vnd.profitbricks.resource+json');
+            assert.equal(pb.options.url, 'https://api.profitbricks.com/cloudapi/v3/datacenters/123456789/servers/000000000/cdroms/111111111?depth=1');
+            assert.equal(pb.options.headers['Content-Type'], 'application/json');
             assert.equal(response.request.method, "GET");
             done();
         });
@@ -76,9 +76,9 @@ describe('pbreq tests', function(){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
-            assert.equal(pb.options.url, 'https://api.profitbricks.com/rest/v2/datacenters/123456789/servers/000000000/cdroms/111111111');
+            assert.equal(pb.options.url, 'https://api.profitbricks.com/cloudapi/v3/datacenters/123456789/servers/000000000/cdroms/111111111');
             assert.equal(pb.options.body, '{"test":"true"}');
-            assert.equal(pb.options.headers['Content-Type'], 'application/vnd.profitbricks.partial-properties+json');
+            assert.equal(pb.options.headers['Content-Type'], 'application/json');
             assert.equal(response.request.method, "PATCH");
             done();
         });
@@ -89,9 +89,9 @@ describe('pbreq tests', function(){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
-            assert.equal(pb.options.url, 'https://api.profitbricks.com/rest/v2/datacenters/123456789/servers/000000000/cdroms/111111111');
+            assert.equal(pb.options.url, 'https://api.profitbricks.com/cloudapi/v3/datacenters/123456789/servers/000000000/cdroms/111111111');
             assert.equal(pb.options.body, '{"test":"true"}');
-            assert.equal(pb.options.headers['Content-Type'], 'application/vnd.profitbricks.resource+json');
+            assert.equal(pb.options.headers['Content-Type'], 'application/json');
             assert.equal(response.request.method, "PUT");
             done();
         });
@@ -102,9 +102,9 @@ describe('pbreq tests', function(){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
-            assert.equal(pb.options.url, 'https://api.profitbricks.com/rest/v2/datacenters/123456789/servers/000000000/cdroms/111111111');
+            assert.equal(pb.options.url, 'https://api.profitbricks.com/cloudapi/v3/datacenters/123456789/servers/000000000/cdroms/111111111');
             assert.equal(pb.options.body, '{"test":"true"}');
-            assert.equal(pb.options.headers['Content-Type'], 'application/vnd.profitbricks.resource+json');
+            assert.equal(pb.options.headers['Content-Type'], 'application/json');
             assert.equal(response.request.method, "POST");
             done();
         });
@@ -115,7 +115,7 @@ describe('pbreq tests', function(){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
-            assert.equal(pb.options.url, 'https://api.profitbricks.com/rest/v2/datacenters/123456789/servers/000000000/cdroms/111111111');
+            assert.equal(pb.options.url, 'https://api.profitbricks.com/cloudapi/v3/datacenters/123456789/servers/000000000/cdroms/111111111');
             assert.equal(pb.options.body, '{"test":"true"}');
             assert.equal(pb.options.headers['Content-Type'], 'application/x-www-form-urlencoded');
             assert.equal(response.request.method, "POST");
@@ -128,7 +128,7 @@ describe('pbreq tests', function(){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
-            assert.equal(pb.options.url, 'https://api.profitbricks.com/rest/v2/datacenters/123456789/servers/000000000/cdroms/111111111');
+            assert.equal(pb.options.url, 'https://api.profitbricks.com/cloudapi/v3/datacenters/123456789/servers/000000000/cdroms/111111111');
             assert.equal(pb.options.body, 'test=true');
             assert.equal(pb.options.headers['Content-Type'], 'application/x-www-form-urlencoded');
             assert.equal(response.request.method, "POST");

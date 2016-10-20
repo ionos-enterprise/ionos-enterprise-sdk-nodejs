@@ -24,7 +24,7 @@ describe('Loadbalancer tests', function(){
         dcData = {
             "properties": {
                 "name":"Test Data Center",
-                "location":"us/lasdev",
+                "location":"us/las",
                 "description":"Test description"
             }
         };
@@ -74,7 +74,7 @@ describe('Loadbalancer tests', function(){
                     assert.equal(object.items.length, 1);
                     done();
                 });
-            }, 5000);
+            }, 30000);
         });
     });
 

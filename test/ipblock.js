@@ -7,7 +7,7 @@ var helper = require('../test/testHelper');
 var ipblock = {};
 var ipblockJson = {
     "properties": {
-        "location": "us/lasdev",
+        "location": "us/las",
         "size": "4"
     }
 };

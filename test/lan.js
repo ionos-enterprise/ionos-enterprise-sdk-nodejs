@@ -21,7 +21,7 @@ describe('LAN tests', function(){
         dcData = {
             "properties": {
                 "name":"Test Data Center",
-                "location":"us/lasdev",
+                "location":"us/las",
                 "description":"Test description"
             }
         };
@@ -75,7 +75,7 @@ describe('LAN tests', function(){
                 assert.equal(object.items.length, 1);
                 done();
             });
-        }, 5000);
+        }, 15000);
     });
 
     it('Get lan', function(done){
@@ -92,31 +92,9 @@ describe('LAN tests', function(){
         });
     });
 
-    it('Update lan', function(done){
-        lanJson.properties.name = 'Test LAN - updated';
-        pb.updateLan(dc.id, lan.id, lanJson, function(error, response, body){
-            assert.equal(error, null);
-            assert.notEqual(response, null);
-            assert.notEqual(body, null);
-            setTimeout(function(){
-                pb.getLan(dc.id, lan.id, function(error, response, body){
-                    assert.equal(error, null);
-                    assert.notEqual(response, null);
-                    assert.notEqual(body, null);
-                    var object = JSON.parse(body);
-                    assert.equal(object.id, lan.id);
-                    assert.equal(object.properties.name, lanJson.properties.name);
-                    assert.equal(object.properties.public, lan.properties.public);
-                    lan = object;
-                    done();
-                });
-            }, 5000);
-        });
-    });
-
     it('Patch lan', function(done){
         var lanPatch = {
-            "name": "Test LAN"
+            "name": "Test LAN - patched "
         };
         pb.patchLan(dc.id, lan.id, lanPatch, function(error, response, body){
             assert.equal(error, null);
@@ -134,7 +112,7 @@ describe('LAN tests', function(){
                     lan = object;
                     done();
                 });
-            }, 5000);
+            }, 15000);
         });
     });
 

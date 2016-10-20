@@ -41,7 +41,7 @@ describe('NIC tests', function(){
         dcData = {
             "properties": {
                 "name":"Test Data Center",
-                "location":"us/lasdev",
+                "location":"us/las",
                 "description":"Test description"
             }
         };
