@@ -3,6 +3,7 @@ var pb = require('../lib/libprofitbricks');
 var helper = require('../test/testHelper');
 var dc = {};
 var server = {};
+var lan = {};
 var volume = {};
 
 var serverData = {
@@ -22,6 +23,16 @@ var serverData = {
                     "type": "HDD"
                 }
             }]
+        },
+        "nics": {
+            "items": [
+                {
+                    "properties": {
+                        "name": "test nic",
+                        "lan": 1
+                    }
+                }
+            ]
         }
     }
 };
@@ -85,18 +96,29 @@ describe('Server tests', function() {
     });
 
     it('Create server', function(done) {
-        pb.createServer(dc.id, serverData, function(error, response, body) {
+        var lanJson = {
+            "properties": {
+                "public": "true",
+                "name": "Test LAN"
+            }
+        };
+        pb.createLan(dc.id, lanJson, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
-            var object = JSON.parse(body);
-            assert.notEqual(object.id, null);
-            assert.equal(object.properties.name, serverData.properties.name);
-            assert.equal(object.properties.ram, serverData.properties.ram);
-            assert.equal(object.properties.cores, serverData.properties.cores);
-            assert.notEqual(object.entities.volumes, null);
-            server = object;
-            done();
+            pb.createServer(dc.id, serverData, function(error, response, body) {
+                assert.equal(error, null);
+                assert.notEqual(response, null);
+                assert.notEqual(body, null);
+                var object = JSON.parse(body);
+                assert.notEqual(object.id, null);
+                assert.equal(object.properties.name, serverData.properties.name);
+                assert.equal(object.properties.ram, serverData.properties.ram);
+                assert.equal(object.properties.cores, serverData.properties.cores);
+                assert.notEqual(object.entities.volumes, null);
+                server = object;
+                done();
+            });
         });
     });
 
@@ -115,6 +137,37 @@ describe('Server tests', function() {
                 assert.notEqual(object.items[0].entities.volumes, null);
                 done();
             });
+        }, 30000);
+    });
+
+    it('Stop server', function(done) {
+        pb.stopServer(dc.id, server.id, function(error, response, body) {
+          assert.equal(error, null);
+          assert.notEqual(response, null);
+          assert.equal(body, '');
+          done();
+        });
+    });
+
+    it('Start server', function(done) {
+        setTimeout(function() {
+          pb.startServer(dc.id, server.id, function(error, response, body) {
+            assert.equal(error, null);
+            assert.notEqual(response, null);
+            assert.equal(body, '');
+            done();
+          });
+        }, 30000);
+    });
+
+    it('Reboot server', function(done) {
+        setTimeout(function() {
+          pb.rebootServer(dc.id, server.id, function(error, response, body) {
+            assert.equal(error, null);
+            assert.notEqual(response, null);
+            assert.equal(body, '');
+            done();
+          });
         }, 30000);
     });
 
@@ -220,7 +273,7 @@ describe('Server tests', function() {
                 assert.equal(object.id, volume.id);
                 done();
             });
-        }, 10000)
+        }, 10000);
     });
 
     it('Detach volume', function(done) {
