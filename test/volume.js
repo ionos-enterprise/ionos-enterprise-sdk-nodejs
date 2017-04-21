@@ -77,6 +77,15 @@ describe('Volume tests', function(){
         });
     });
 
+    it('Create volume failure', function(done){
+      volumeJson.properties.type = "YYD"; // <-- Pass bad volume type
+        pb.createVolume(dc.id, volumeJson, function(error, response, body){
+            var object = JSON.parse(body);
+            assert.equal(object['httpStatus'], 422); // <-- Check for validation error
+            done();
+        });
+    });
+
     it('Get volume', function(done){
         pb.getVolume(dc.id, volume.id, function(error, response, body){
             assert.equal(error, null);
