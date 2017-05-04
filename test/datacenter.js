@@ -62,6 +62,14 @@ describe('Datacenter tests', function(){
         }, 1000);
     });
 
+    it('Get datacenter failure', function(done){
+        pb.getDatacenter('fakeId', function(error, response, body){
+            var object = JSON.parse(body);
+            assert.equal(object['httpStatus'], 404);
+            done();
+        });
+    });
+
     it('Update datacenter', function(done){
         updateData = {
             "properties":{
