@@ -4,30 +4,16 @@
 var assert = require('assert');
 var pb = require('../lib/libprofitbricks');
 var helper = require('../test/testHelper');
+var config = require('../test/config');
 var dc = {};
 var lan = {};
-
-var lanJson = {
-    "properties": {
-        "public": "true",
-        "name": "Test LAN"
-    }
-};
 
 describe('LAN tests', function(){
     this.timeout(80000);
 
     before(function(done){
-        dcData = {
-            "properties": {
-                "name":"Test Data Center",
-                "location":"us/las",
-                "description":"Test description"
-            }
-        };
-
         helper.authenticate(pb);
-        pb.createDatacenter(dcData, function(error, response, body){
+        pb.createDatacenter(config.dcData, function(error, response, body){
             assert.equal(error, null);
             dc = JSON.parse(body);
             done();
@@ -53,12 +39,13 @@ describe('LAN tests', function(){
     });
 
     it('Create lan', function(done){
-        pb.createLan(dc.id, lanJson, function(error, response, body){
+        pb.createLan(dc.id, config.lan, function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
             var object = JSON.parse(body);
-            assert.equal(object.properties.name, lanJson.properties.name);
+            assert.equal(object.type, 'lan');
+            assert.equal(object.properties.name, config.lan.properties.name);
             assert.equal(object.properties.public, true);
             lan = object;
             done();
@@ -72,6 +59,7 @@ describe('LAN tests', function(){
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
                 var object = JSON.parse(body);
+                assert.equal(object.items[0].type, 'lan');
                 assert.equal(object.items.length, 1);
                 done();
             });
@@ -84,6 +72,7 @@ describe('LAN tests', function(){
             assert.notEqual(response, null);
             assert.notEqual(body, null);
             var object = JSON.parse(body);
+            assert.equal(object.type, 'lan');
             assert.equal(object.id, lan.id);
             assert.equal(object.properties.name, lan.properties.name);
             assert.equal(object.properties.public, lan.properties.public);
@@ -92,9 +81,28 @@ describe('LAN tests', function(){
         });
     });
 
+    it('Get LAN failure', function (done) {
+        pb.getLan(dc.id, 0, function (error, response, body) {
+            var object = JSON.parse(body);
+            assert.equal(object['httpStatus'], 404);
+            assert.equal(object['messages'][0]['message'], 'Resource does not exist');
+            done();
+        });
+    });
+
+    it('Create LAN failure', function (done) {
+        pb.createLan('00000000-0000-0000-0000-000000000000', config.lan, function (error, response, body) {
+            var object = JSON.parse(body);
+            assert.equal(object['httpStatus'], 404);
+            assert.equal(object['messages'][0]['message'], 'Resource does not exist');
+            done();
+        });
+    });
+
     it('Patch lan', function(done){
         var lanPatch = {
-            "name": "Test LAN - patched "
+            "name": config.lan.properties.name + ' - RENAME',
+            "public": false
         };
         pb.patchLan(dc.id, lan.id, lanPatch, function(error, response, body){
             assert.equal(error, null);
@@ -106,9 +114,10 @@ describe('LAN tests', function(){
                     assert.notEqual(response, null);
                     assert.notEqual(body, null);
                     var object = JSON.parse(body);
+                    assert.equal(object.type, 'lan');
                     assert.equal(object.id, lan.id);
                     assert.equal(object.properties.name, lanPatch.name);
-                    assert.equal(object.properties.public, lan.properties.public);
+                    assert.equal(object.properties.public, false);
                     lan = object;
                     done();
                 });
@@ -131,7 +140,7 @@ describe('LAN tests', function(){
     it('Delete lan', function(done){
         pb.deleteLan(dc.id, lan.id, function(error, response, body){
             assert.equal(error, null);
-            assert.notEqual(response, null);
+            assert.equal(response.statusCode, 202);
             assert.equal(body, "");
             done();
         });
