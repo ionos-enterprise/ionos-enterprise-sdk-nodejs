@@ -1,7 +1,7 @@
 /**
  * Created by ssabic on 09/07/15.
  */
-var assert = require('assert');
+var assert = require('assert-plus');
 var pb = require('../lib/libprofitbricks');
 var helper = require('../test/testHelper');
 
@@ -22,6 +22,7 @@ describe('Request tests', function(){
             assert.notEqual(body, null);
             var object = JSON.parse(body);
             assert.equal(object.items.length > 0, true);
+            assert.equal(object.items[0].type, "request");
             req = object.items[object.items.length - 1];
             done();
         });
@@ -35,6 +36,15 @@ describe('Request tests', function(){
             var object = JSON.parse(body);
             assert.equal(object.id, req.id);
             assert.equal(object.type, "request");
+            done();
+        });
+    });
+
+    it('Get request failure', function (done) {
+        pb.getRequest('00000000-0000-0000-0000-000000000000', function (error, response, body) {
+            var object = JSON.parse(body);
+            assert.equal(object['httpStatus'], 404);
+            assert.equal(object['messages'][0]['message'], 'Resource does not exist');
             done();
         });
     });
