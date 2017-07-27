@@ -1,76 +1,59 @@
-var assert = require('assert');
+var assert = require('assert-plus');
 var pb = require('../lib/libprofitbricks');
 var helper = require('../test/testHelper');
+var config = require('../test/config');
 var dc = {};
 var server = {};
 var lan = {};
 var volume = {};
-
-var serverData = {
-    "properties": {
-        "name": "Test Server",
-        "ram": 1024,
-        "cores": 2
-    },
-    "entities": {
-        "volumes": {
-            "items": [{
-                "properties": {
-                    "size": 10,
-                    "name": "test volume",
-                    "licenceType": "UNKNOWN",
-                    "bus": "VIRTIO",
-                    "type": "HDD"
-                }
-            }]
-        },
-        "nics": {
-            "items": [
-                {
-                    "properties": {
-                        "name": "test nic",
-                        "lan": 1
-                    }
-                }
-            ]
-        }
-    }
-};
+var bootVolume = {};
+var cdRom = {};
+var image = '';
 
 describe('Server tests', function() {
-    this.timeout(90000);
+    this.timeout(300000);
 
     before(function(done) {
-        var dcData = {
-            "properties": {
-                "name": "Test Data Center",
-                "location": "us/las",
-                "description": "Test description"
-            }
-        };
-
-        var volumeJson = {
-            properties: {
-                name: "Test volume",
-                size: "1",
-                bus: "VIRTIO",
-                licenceType: "LINUX",
-                type: "HDD"
-            }
-        };
-
         helper.authenticate(pb);
-        pb.createDatacenter(dcData, function(error, response, body) {
-            assert.equal(error, null);
-            dc = JSON.parse(body);
-            pb.createVolume(dc.id, volumeJson, function(error, response, body) {
+        pb.listImages(function (error, response, body) {
+            var object = JSON.parse(body);
+            var images = object.items;
+            for (var i = 0; i < images.length; i++) {
+                if (images[i].properties.location == 'us/las') {
+                    if (images[i].properties.imageType == "HDD") {
+                        if (images[i].properties.name.indexOf('Ubuntu-16.04') > -1) {
+                            image = images[i].id;
+                        }
+                    } else
+                        if (images[i].properties.imageType == "CDROM" &&
+                            images[i].properties.name.indexOf('ubuntu-17.04') > -1) {
+                            cdRom = images[i];
+                    }
+                }
+            }
+            pb.createDatacenter(config.dcData, function (error, response, body) {
                 assert.equal(error, null);
-                assert.notEqual(response, null);
-                assert.notEqual(body, null);
-                var object = JSON.parse(body);
-                assert.notEqual(object.id, null);
-                volume = object;
-                done();
+                dc = JSON.parse(body);
+                config.bootVolume.properties.image = image;
+                pb.createVolume(dc.id, config.bootVolume, function (error, response, body) {
+                    assert.equal(error, null);
+                    assert.notEqual(response, null);
+                    assert.notEqual(body, null);
+                    var object = JSON.parse(body);
+                    assert.notEqual(object.id, null);
+                    bootVolume = object;
+                    setTimeout(function () {
+                        pb.createVolume(dc.id, config.volume, function (error, response, body) {
+                            assert.equal(error, null);
+                            assert.notEqual(response, null);
+                            assert.notEqual(body, null);
+                            var object = JSON.parse(body);
+                            assert.notEqual(object.id, null);
+                            volume = object;
+                            done();
+                        });
+                    }, 90000);
+                });
             });
         });
     });
@@ -95,29 +78,70 @@ describe('Server tests', function() {
         });
     });
 
-    it('Create server', function(done) {
-        var lanJson = {
-            "properties": {
-                "public": "true",
-                "name": "Test LAN"
+    it('Create simple server', function (done) {
+        config.serverSim["entities"] = {
+            "volumes": {
+                "items": [
+                    {
+                        "id": bootVolume.id
+                    }
+                ]
             }
         };
-        pb.createLan(dc.id, lanJson, function(error, response, body) {
+        pb.createServer(dc.id, config.serverSim, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
-            pb.createServer(dc.id, serverData, function(error, response, body) {
+            var object = JSON.parse(body);
+            assert.notEqual(object.id, null);
+            assert.equal(object.type, 'server');
+            assert.equal(object.properties.name, config.serverSim.properties.name);
+            assert.equal(object.properties.ram, config.serverSim.properties.ram);
+            assert.equal(object.properties.cores, config.serverSim.properties.cores);
+            assert.notEqual(object.entities.volumes, null);
+            setTimeout(function () {
+                pb.getServer(dc.id, object.id, function (error, response, body) {
+                    var object = JSON.parse(body);
+                    assert.notEqual(object.id, null);
+                    assert.equal(object.type, 'server');
+                    assert.equal(object.properties.name, config.serverSim.properties.name);
+                    assert.equal(object.properties.ram, config.serverSim.properties.ram);
+                    assert.equal(object.properties.cores, config.serverSim.properties.cores);
+                    assert.equal(object.properties.cpuFamily, config.serverSim.properties.cpuFamily);
+                    assert.equal(object.properties.availabilityZone, config.serverSim.properties.availabilityZone);
+                    assert.equal(object.properties.bootVolume.id, bootVolume.id);
+                    server = object;
+                    done();
+                });
+            }, 30000);
+        });
+    });
+
+    it('Create composite server', function (done) {
+        pb.createLan(dc.id, config.lan, function (error, response, body) {
+            assert.equal(error, null);
+            assert.notEqual(response, null);
+            assert.notEqual(body, null);
+            config.serverCom.entities.volumes.items[0].properties.image = image;
+            pb.createServer(dc.id, config.serverCom, function (error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
                 var object = JSON.parse(body);
                 assert.notEqual(object.id, null);
-                assert.equal(object.properties.name, serverData.properties.name);
-                assert.equal(object.properties.ram, serverData.properties.ram);
-                assert.equal(object.properties.cores, serverData.properties.cores);
-                assert.notEqual(object.entities.volumes, null);
-                server = object;
-                done();
+                assert.equal(object.type, 'server');
+                assert.equal(object.properties.name, config.serverCom.properties.name);
+                assert.equal(object.properties.ram, config.serverCom.properties.ram);
+                assert.equal(object.properties.cores, config.serverCom.properties.cores);
+                setTimeout(function () {
+                    pb.getServer(dc.id, object.id, function (error, response, body) {
+                        var object = JSON.parse(body);
+                        assert.notEqual(object.id, null);
+                        assert.equal(object.entities.volumes.items.length > 0, true);
+                        assert.equal(object.entities.nics.items.length > 0, true);
+                        done();
+                    });
+                }, 30000);
             });
         });
     });
@@ -129,15 +153,35 @@ describe('Server tests', function() {
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
                 var object = JSON.parse(body);
-                assert.equal(object.items.length, 1);
-                assert.equal(object.items[0].id, server.id);
-                assert.equal(object.items[0].properties.name, serverData.properties.name);
-                assert.equal(object.items[0].properties.ram, serverData.properties.ram);
-                assert.equal(object.items[0].properties.cores, serverData.properties.cores);
-                assert.notEqual(object.items[0].entities.volumes, null);
+                assert.equal(object.items.length > 0, true);
+                assert.equal(object.items[0].type, 'server');
                 done();
             });
         }, 30000);
+    });
+
+    it('Get server failure', function (done) {
+        pb.getServer(dc.id, '00000000-0000-0000-0000-000000000000', function (error, response, body) {
+            var object = JSON.parse(body);
+            assert.equal(object['httpStatus'], 404);
+            assert.equal(object['messages'][0]['message'], 'Resource does not exist');
+            done();
+        });
+    });
+
+    it('Create server failure', function (done) {
+        var serverReq = {
+            "properties": {
+                "name": "NodeJS SDK Test",
+                "ram": 1024
+            }
+        }
+        pb.createServer(dc.id, serverReq, function (error, response, body) {
+            var object = JSON.parse(body);
+            assert.equal(object['httpStatus'], 422);
+            assert.ok(object['messages'][0]['message'].indexOf("Attribute 'cores' is required") > -1);
+            done();
+        });
     });
 
     it('Stop server', function(done) {
@@ -177,11 +221,14 @@ describe('Server tests', function() {
             assert.notEqual(response, null);
             assert.notEqual(body, null);
             var object = JSON.parse(body);
+            assert.equal(object.type, 'server');
             assert.equal(object.id, server.id);
-            assert.equal(object.properties.name, serverData.properties.name);
-            assert.equal(object.properties.ram, serverData.properties.ram);
-            assert.equal(object.properties.cores, serverData.properties.cores);
-            assert.notEqual(object.entities.volumes, null);
+            assert.equal(object.properties.name, config.serverSim.properties.name);
+            assert.equal(object.properties.ram, config.serverSim.properties.ram);
+            assert.equal(object.properties.cores, config.serverSim.properties.cores);
+            assert.equal(object.properties.cpuFamily, config.serverSim.properties.cpuFamily);
+            assert.equal(object.properties.availabilityZone, config.serverSim.properties.availabilityZone);
+            assert.equal(object.properties.bootVolume.id, bootVolume.id);
             done();
         });
     });
@@ -189,29 +236,27 @@ describe('Server tests', function() {
     it('Update server', function(done) {
         updateData = {
             "properties": {
-                "name": "Test Server - UPDATED",
-                "ram": 2048,
-                "cores": 2
+                "ram": config.serverSim.properties.ram,
+                "cores": config.serverSim.properties.cores,
+                "name": config.serverSim.properties.name + " - RENAME UPDATED"
             }
         };
-        pb.updateServer(dc.id, server.id, updateData, function(error, response, body) {
-            assert.equal(error, null);
-            assert.notEqual(response, null);
-            assert.notEqual(body, null);
-            var object = JSON.parse(body);
-            assert.equal(object.id, server.id);
-            assert.equal(object.properties.name, updateData.properties.name);
-            assert.equal(object.properties.ram, updateData.properties.ram);
-            assert.equal(object.properties.cores, updateData.properties.cores);
-            done();
-        });
+        setTimeout(function () {
+            pb.updateServer(dc.id, server.id, updateData, function (error, response, body) {
+                assert.equal(error, null);
+                assert.notEqual(response, null);
+                assert.notEqual(body, null);
+                var object = JSON.parse(body);
+                assert.equal(object.id, server.id);
+                assert.equal(object.properties.name, updateData.properties.name);
+                done();
+            });
+        }, 60000);
     });
 
     it('Patch server', function(done) {
         patchData = {
-            "name": "Test Server - PATCHED",
-            "ram": 1024,
-            "cores": 2
+            "name": config.serverSim.properties.name + " - RENAME PATCHED"
         };
 
         pb.patchServer(dc.id, server.id, patchData, function(error, response, body) {
@@ -224,15 +269,13 @@ describe('Server tests', function() {
                 pb.getServer(dc.id, server.id, function(error, response, body) {
                     var object = JSON.parse(body);
                     assert.equal(object.properties.name, patchData.name);
-                    assert.equal(object.properties.ram, patchData.ram);
-                    assert.equal(object.properties.cores, patchData.cores);
                     done();
                 });
             }, 70000);
         });
     });
 
-    it('List attached volumes - empty server', function(done) {
+    it('List attached volumes', function(done) {
         pb.listAttachedVolumes(dc.id, server.id, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
@@ -273,7 +316,7 @@ describe('Server tests', function() {
                 assert.equal(object.id, volume.id);
                 done();
             });
-        }, 10000);
+        }, 60000);
     });
 
     it('Detach volume', function(done) {
@@ -294,6 +337,62 @@ describe('Server tests', function() {
         });
     });
 
+    it('Attach CDROM', function (done) {
+        pb.attachCdrom(dc.id, server.id, cdRom.id, function (error, response, body) {
+            assert.equal(error, null);
+            assert.notEqual(response, null);
+            assert.notEqual(body, null);
+            var object = JSON.parse(body);
+            assert.equal(object.id, cdRom.id);
+            assert.equal(object.properties.name, cdRom.properties.name);
+            done();
+        });
+    });
+
+    it('Get attached CDROM', function (done) {
+        setTimeout(function () {
+            pb.getAttachedCdrom(dc.id, server.id, cdRom.id, function (error, response, body) {
+                assert.equal(error, null);
+                assert.notEqual(response, null);
+                assert.notEqual(body, null);
+                var object = JSON.parse(body);
+                assert.equal(object.id, cdRom.id);
+                assert.equal(object.properties.name, cdRom.properties.name);
+                done();
+            });
+        }, 30000);
+    });
+
+    it('List attached CDROMs', function (done) {
+        pb.listAttachedCdroms(dc.id, server.id, function (error, response, body) {
+            assert.equal(error, null);
+            assert.notEqual(response, null);
+            assert.notEqual(body, null);
+            var object = JSON.parse(body);
+            assert.equal(object.items[0].id, cdRom.id);
+            assert.equal(object.items[0].properties.name, cdRom.properties.name);
+            done();
+        });
+    });
+
+    it('Dettach CDROM', function (done) {
+        setTimeout(function () {
+            pb.detachCdrom(dc.id, server.id, cdRom.id, function (error, response, body) {
+                assert.equal(error, null);
+                assert.notEqual(response, null);
+                assert.equal(body, '');
+                setTimeout(function () {
+                    pb.getAttachedCdrom(dc.id, server.id, cdRom.id, function (error, response, body) {
+                        assert.equal(error, null);
+                        var object = JSON.parse(body);
+                        assert.equal(object.messages[0].errorCode, '309');
+                        assert.equal(object.messages[0].message, 'Resource does not exist');
+                        done();
+                    });
+                }, 30000);
+            });
+        }, 60000);
+    });
 
     it('Delete server', function(done) {
         pb.deleteServer(dc.id, server.id, function(error, response, body) {
@@ -306,15 +405,9 @@ describe('Server tests', function() {
                     var object = JSON.parse(body);
                     assert.equal(object.messages[0].errorCode, '309');
                     assert.equal(object.messages[0].message, 'Resource does not exist');
+                    done();
                 });
-                setTimeout(function() {
-                    pb.deleteDatacenter(dc.id, function(error, response, body) {
-                        assert.equal(error, null);
-                        done();
-                    });
-                }, 1000);
             }, 50000);
-
         });
     });
 });

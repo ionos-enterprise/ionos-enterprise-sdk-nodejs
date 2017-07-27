@@ -1,33 +1,46 @@
-The ProfitBricks Client Library for Node.js allows interaction with the ProfitBricks platform over the REST API. It is designed for developers who are building applications in Node.js. This guide will walk you through installing the library and performing various actions against the API.  
+# NodeJS SDK
+
+Version: profitbricks-sdk-nodejs **4.0.0**
 
 ## Table of Contents
 
-* [Concepts](#concepts)
+* [Description](#description)
 * [Getting Started](#getting-started)
 * [Installation](#installation)
-* [Authenticating](#authenticating)
-* [How to: Create a Data Center](#how-to-create-a-data-center)
-* [How to: Delete a Data Center](#how-to-delete-a-data-center)
-* [How to: Create a Server](#how-to-create-a-server)
-* [How to: Update Cores, Memory, and Disk](#how-to-update-cores-memory-and-disk)
-* [How to: List Servers, Volumes, and Data Centers](#how-to-list-servers-volumes-and-data-centers)
-* [How to: Create Additional Network Interfaces](#how-to-create-additional-network-interfaces)
-* [Data Center Functions](#data-center-functions)
-* [Firewall Rule Functions](#firewall-rule-functions)
-* [Image Functions](#image-functions)
-* [LAN Functions](#lan-functions)
-* [Load Balancer Functions](#load-balancer-functions)
-* [Location Functions](#location-functions)
-* [NIC Functions](#nic-functions)
-* [Request Functions](#request-functions)
-* [Server Functions](#server-functions)
-* [Server Volume Functions](#server-volume-functions)
-* [Server CDROM Functions](#server-cdroms-functions)
-* [Server Command Functions](#server-command-functions)
-* [Snapshot Functions](#snapshot-functions)
-* [Volume Functions](#volume-functions)
+* [Usage](#usage)
+  * [Authentication](#authentication)
+  * [How to: Create a Data Center](#how-to-create-a-data-center)
+  * [How to: Delete a Data Center](#how-to-delete-a-data-center)
+  * [How to: Create a Server](#how-to-create-a-server)
+  * [How to: Update Cores, Memory, and Disk](#how-to-update-cores-memory-and-disk)
+  * [How to: List Servers, Volumes, and Data Centers](#how-to-list-servers-volumes-and-data-centers)
+  * [How to: Create Additional Network Interfaces](#how-to-create-additional-network-interfaces)
+  * [How to: Create a User](#how-to-create-a-user)
+  * [How to: Create a Group](#how-to-create-a-group)
+* [Reference](#reference)
+  * [Contract Resources Functions](#contract-resources-functions)
+  * [Data Center Functions](#data-center-functions)
+  * [Firewall Rule Functions](#firewall-rule-functions)
+  * [Image Functions](#image-functions)
+  * [LAN Functions](#lan-functions)
+  * [Load Balancer Functions](#load-balancer-functions)
+  * [Location Functions](#location-functions)
+  * [NIC Functions](#nic-functions)
+  * [Request Functions](#request-functions)
+  * [Server Functions](#server-functions)
+  * [Server Volume Functions](#server-volume-functions)
+  * [Server CDROM Functions](#server-cdroms-functions)
+  * [Server Command Functions](#server-command-functions)
+  * [Snapshot Functions](#snapshot-functions)
+  * [User Management Functions](#user-management-functions)
+  * [Volume Functions](#volume-functions)
+* [Support](#support)
+* [Testing](#testing)
+* [Contributing](#contributing)
 
-## Concepts
+## Description
+
+The ProfitBricks Client Library for Node.js allows interaction with the ProfitBricks platform over the REST API. It is designed for developers who are building applications in Node.js. This guide will walk you through installing the library and performing various actions against the API.
 
 The Node.js Client Library, libprofitbricks, wraps the latest version of the ProfitBricks REST API. All API operations are performed over SSL and authenticated using your ProfitBricks account credentials. The API can be accessed within a server running on the ProfitBricks platform or directly over the Internet from any application that can send and receive HTTPS requests and responses. 
 
@@ -41,9 +54,11 @@ The Node.js Client Library is available on [npm](https://www.npmjs.com/package/l
 
     npm install libprofitbricks
 
-## Authenticating
+## Usage
 
-Connecting to ProfitBricks is handled by first setting up your authentication credentials.  
+### Authentication
+
+Connecting to ProfitBricks is handled by first setting up your authentication credentials.
 
     var libpb = require('libprofitbricks')
     libpb.setauth('username', 'password')
@@ -54,7 +69,7 @@ The `depth` is used to control the depth of JSON object returned. The depth valu
 
     libpb.setdepth(5)
 
-## How to: Create a Data Center
+### How to: Create a Data Center
 
 ProfitBricks uses the concept of data centers. These are logically separated from one another and allow you to have a self-contained environment for all servers, volumes, networking, snapshots, and so forth. The goal is to give you the same experience as you would have if you were running your own physical data center.
 
@@ -82,7 +97,7 @@ To create a simple one you would do this:
     
 You can find more detailed information about data center creation [here](https://devops.profitbricks.com/api/rest/#create-a-data-center)
 
-## How to: Delete a Data Center
+### How to: Delete a Data Center
 
 You will want to exercise a bit of caution here. Removing a data center will **destroy** all objects contained within that data center including servers, volumes, snapshots, and so forth. 
 
@@ -90,7 +105,7 @@ You will want to exercise a bit of caution here. Removing a data center will **d
 
     libpb.deleteDatacenter(datacenter_id, callback)
 
-## How to: Create a Server
+### How to: Create a Server
 
 The following example shows you how to create a new server in the virtual data center created above.
 
@@ -113,7 +128,7 @@ The following example shows you how to create a new server in the virtual data c
 
 One of the unique features of the ProfitBricks platform when compared with the other providers is that it allows you to define your own settings for cores, memory, and disk size without being tied to a particular size.
 
-## How to: Update Cores, Memory, and Disk
+### How to: Update Cores, Memory, and Disk
 
 ProfitBricks allows users to dynamically update cores, memory, and disk independently of each other. This removes the restriction of needing to upgrade to the next instance size to receive an increase in memory. You can now simply increase the server's memory thereby keeping your costs in-line with your resource needs. 
 
@@ -126,7 +141,7 @@ The following code illustrates how you can update the cores and memory of a serv
     
     libpb.updateServer(datacenter_id, server_id, data, callback)
 
-## How to: List Servers, Volumes, and Data Centers
+### How to: List Servers, Volumes, and Data Centers
 
 Listing resources is fairly straight forward. To view all data centers:
 
@@ -148,7 +163,7 @@ Listing volumes within a data center:
     
     libpb.listVolumes(datacenter_id, callback)
 
-## How to: Create Additional Network Interfaces
+### How to: Create Additional Network Interfaces
 
 The ProfitBricks platform supports adding multiple NICs to a server. These NICs can be used to create segmented networks on the platform. 
 
@@ -161,7 +176,50 @@ The sample below shows you how to add a second NIC to an existing server:
     
     libpb.createNic(dc_id, server_id, data)
 
-## Data Center Functions
+### How to: Create a User
+
+The following example shows you how to create a new user with administrator privileges.
+
+    var data = {
+        "properties": {
+            "firstname": "John",
+            "lastname": "Doe",
+            "email": "no-reply@example.com",
+            "password": "secretpassword123",
+            "administrator": true,
+            "forceSecAuth": false
+        }
+    }
+
+    libpb.createUser(data, function(error, response, body) {
+        console.log(body)
+        console.log(error)
+        console.log(response)
+    })
+
+### How to: Create a Group
+
+The following example shows you how to create a new group.
+
+    var data = {
+        "properties": {
+            "name": "Test Group",
+            "createDataCenter": true,
+            "createSnapshot": true,
+            "reserveIp": true,
+            "accessActivityLog": true
+        }
+    }
+
+    libpb.createGroup(data)
+
+## Reference
+
+### Contract Resources Functions
+
+    listContractResources: function(callback)
+
+### Data Center Functions
 
     listDatacenters: function(callback)
     
@@ -175,7 +233,7 @@ The sample below shows you how to add a second NIC to an existing server:
     
     deleteDatacenter: function(dc_id, callback)
 
-## Firewall Rule Functions
+### Firewall Rule Functions
 
     listFWRules: function(dc_id, server_id, nic_id, callback)
     
@@ -189,7 +247,7 @@ The sample below shows you how to add a second NIC to an existing server:
     
     delFWRule: function(dc_id, server_id, nic_id, fwrule_id, callback)
 
-## Image Functions
+### Image Functions
 
     listImages: function(callback)
 
@@ -201,7 +259,7 @@ The sample below shows you how to add a second NIC to an existing server:
     
     deleteImage: function(image_id,callback)
 
-## IP Block Functions
+### IP Block Functions
 
     listIpblocks: function(callback)
     
@@ -211,7 +269,7 @@ The sample below shows you how to add a second NIC to an existing server:
     
     releaseIpblock: function(ipblock_id,callback)
 
-## LAN Functions
+### LAN Functions
 
     listLans: function(dc_id,callback)
     
@@ -227,7 +285,7 @@ The sample below shows you how to add a second NIC to an existing server:
     
     listLanMembers: function(dc_id,lan_id,callback)
 
-## Load Balancer Functions
+### Load Balancer Functions
 
     createLoadbalancer: function(dc_id, data, callback)
     
@@ -241,13 +299,13 @@ The sample below shows you how to add a second NIC to an existing server:
     
     updateLoadbalancer: function(dc_id, lb_id, data, callback)
 
-## Location Functions
+### Location Functions
 
     getLocation: function(location_id, callback)
     
     listLocations: function(callback)
 
-## NIC Functions
+### NIC Functions
 
     createNic: function(dc_id, server_id, data, callback)
     
@@ -261,7 +319,7 @@ The sample below shows you how to add a second NIC to an existing server:
     
     updateNic: function(dc_id, server_id, nic_id, data, callback)
 
-## Request Functions
+### Request Functions
 
     listRequests: function(callback)
     
@@ -269,7 +327,7 @@ The sample below shows you how to add a second NIC to an existing server:
     
     statusRequest: function(request_id, callback)
 
-## Server Functions
+### Server Functions
 
     createServer: function(dc_id, data, callback)
     
@@ -283,7 +341,7 @@ The sample below shows you how to add a second NIC to an existing server:
     
     updateServer: function(dc_id, server_id, data, callback)
 
-## Server Volume Functions
+### Server Volume Functions
 
     listAttachedVolumes: function(dc_id, server_id, callback)
     
@@ -293,7 +351,7 @@ The sample below shows you how to add a second NIC to an existing server:
     
     detachVolume: function(dc_id, server_id, volume_id, callback)
 
-## Server CDROM Functions
+### Server CDROM Functions
 
     listAttachedCdroms: function(dc_id, server_id, callback)
     
@@ -303,7 +361,7 @@ The sample below shows you how to add a second NIC to an existing server:
     
     detachCdrom: function(dc_id, server_id, cdrom_id, callback)
 
-## Server Command Functions
+### Server Command Functions
 
     rebootServer: function(dc_id, server_id, callback)
     
@@ -311,7 +369,7 @@ The sample below shows you how to add a second NIC to an existing server:
     
     stopServer: function(dc_id, server_id, callback)    
 
-## Snapshot Functions
+### Snapshot Functions
 
     deleteSnapshot: function(snapshot_id, callback)
     
@@ -327,7 +385,51 @@ The sample below shows you how to add a second NIC to an existing server:
     
     restoreSnapshot: function(dc_id, volume_id, data, callback)
 
-## Volume Functions
+### User Management Functions
+
+    listGroups: function (callback)
+
+    createGroup: function (data, callback)
+
+    getGroup: function (group_id, callback)
+
+    updateGroup: function (group_id, data, callback)
+
+    deleteGroup: function (group_id, callback)
+
+    listUsers: function (callback)
+
+    createUser: function (data, callback)
+
+    getUser: function (user_id, callback)
+
+    updateUser: function (user_id, data, callback)
+
+    deleteUser: function (user_id, callback)
+
+    listGroupUsers: function (group_id, callback)
+
+    addGroupUser: function (group_id, data, callback)
+
+    removeGroupUser: function (group_id, user_id, callback)
+
+    listShares: function (group_id, callback)
+
+    addShare: function (group_id, resource_id, data, callback)
+
+    getShare: function (group_id, resource_id, callback)
+
+    updateShare: function (group_id, resource_id, data, callback)
+
+    removeShare: function (group_id, resource_id, callback)
+
+    listResources: function (callback)
+
+    listResourcesByType: function (resource_type, callback)
+
+    getResourceByType: function (resource_type, resource_id, callback)
+
+### Volume Functions
 
     listVolumes: function(dc_id, callback)
     
@@ -341,6 +443,38 @@ The sample below shows you how to add a second NIC to an existing server:
     
     deleteVolume: function(dc_id, volume_id, callback)
 
-## Additional Documentation and Support
+## Support
 
-You can find additional examples in our repo [here](https://github.com/profitbricks/profitbricks-sdk-nodejs). If you find any issues, please let us know via the DevOps Central community or GitHub's issue system and we will check it out.
+You can find additional examples in the repository `examples` directory. If you find any issues, please let us know via the [DevOps Central community](https://devops.profitbricks.com) or [GitHub's issue system](https://github.com/profitbricks/profitbricks-sdk-nodejs/issues) and we'll check it out.
+
+## Testing
+
+You can find a full list of tests inside the `test` directory. Before running the tests, install the package dependencies and export your ProfitBricks credentials.
+Note that the test user must have administrator privileges.
+
+
+    export PROFITBRICKS_USERNAME=username
+    export PROFITBRICKS_PASSWORD=password
+
+    npm install
+
+To run all available tests:
+
+    npm test
+
+or
+
+    mocha test
+
+
+To run a particular test context:
+
+    mocha -g 'Datacenter tests'
+
+## Contributing
+
+1. Fork it ( https://github.com/profitbricks/profitbricks-sdk-nodejs/fork )
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create a new Pull Request
