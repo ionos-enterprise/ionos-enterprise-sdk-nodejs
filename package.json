@@ -1,6 +1,6 @@
 {
   "name": "libprofitbricks",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "The ProfitBricks Library for Node and Io",
   "main": "./lib/index.js",
   "scripts": {
