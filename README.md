@@ -1,6 +1,6 @@
 # NodeJS SDK
 
-Version: profitbricks-sdk-nodejs **4.0.1**
+Version: profitbricks-sdk-nodejs **4.1.0**
 
 ## Table of Contents
 
