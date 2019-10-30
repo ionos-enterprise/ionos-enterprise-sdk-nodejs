@@ -2,7 +2,7 @@
  * Created by ssabic on 08/07/15.
  */
 var assert = require('assert-plus');
-var pb = require('../lib/libprofitbricks');
+var lib = require('../lib/libionosenterprise');
 var helper = require('../test/testHelper');
 var config = require('../test/config');
 var dc = {};
@@ -15,15 +15,15 @@ describe('Loadbalancer tests', function(){
     this.timeout(300000);
 
     before(function(done){
-        helper.authenticate(pb);
-        pb.createDatacenter(config.dcData, function (error, response, body) {
+        helper.authenticate(lib);
+        lib.createDatacenter(config.dcData, function (error, response, body) {
             assert.equal(error, null);
             dc = JSON.parse(body);
-            pb.createLan(dc.id, config.lan2, function (error, response, body) {
+            lib.createLan(dc.id, config.lan2, function (error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
-                pb.createServer(dc.id, config.serverSim, function (error, response, body) {
+                lib.createServer(dc.id, config.serverSim, function (error, response, body) {
                     assert.equal(error, null);
                     assert.notEqual(response, null);
                     assert.notEqual(body, null);
@@ -31,7 +31,7 @@ describe('Loadbalancer tests', function(){
                     assert.notEqual(object.id, null);
                     server = object;
                     setTimeout(function () {
-                        pb.createNic(dc.id, server.id, config.nic, function (error, response, body) {
+                        lib.createNic(dc.id, server.id, config.nic, function (error, response, body) {
                             assert.equal(error, null);
                             assert.notEqual(response, null);
                             assert.notEqual(body, null);
@@ -47,7 +47,7 @@ describe('Loadbalancer tests', function(){
     });
 
     after(function(done){
-        pb.deleteDatacenter(dc.id, function(error, response, body){
+        lib.deleteDatacenter(dc.id, function(error, response, body){
             assert.equal(error, null);
             done();
         });
@@ -62,7 +62,7 @@ describe('Loadbalancer tests', function(){
             }
         };
         setTimeout(function () {
-            pb.createLoadbalancer(dc.id, config.loadbalancer, function (error, response, body) {
+            lib.createLoadbalancer(dc.id, config.loadbalancer, function (error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -79,7 +79,7 @@ describe('Loadbalancer tests', function(){
 
     it('List loadbalancers', function (done) {
         setTimeout(function () {
-            pb.listLoadbalancers(dc.id, function (error, response, body) {
+            lib.listLoadbalancers(dc.id, function (error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -93,7 +93,7 @@ describe('Loadbalancer tests', function(){
 
     it('Create loadbalancer failure', function (done) {
         var lbReq = {};
-        pb.createLoadbalancer(dc.id, lbReq, function (error, response, body) {
+        lib.createLoadbalancer(dc.id, lbReq, function (error, response, body) {
             var object = JSON.parse(body);
             assert.equal(object['httpStatus'], 422);
             assert.ok(object['messages'][0]['message'].indexOf("Resource-definition requires 'properties' attribute") > -1);
@@ -102,7 +102,7 @@ describe('Loadbalancer tests', function(){
     });
 
     it('Get loadbalancer', function(done){
-        pb.getLoadbalancer(dc.id, lb.id, function(error, response, body){
+        lib.getLoadbalancer(dc.id, lb.id, function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -117,7 +117,7 @@ describe('Loadbalancer tests', function(){
     });
 
     it('Get loadbalancer failure', function (done) {
-        pb.getServer(dc.id, '00000000-0000-0000-0000-000000000000', function (error, response, body) {
+        lib.getServer(dc.id, '00000000-0000-0000-0000-000000000000', function (error, response, body) {
             var object = JSON.parse(body);
             assert.equal(object['httpStatus'], 404);
             assert.equal(object['messages'][0]['message'], 'Resource does not exist');
@@ -131,7 +131,7 @@ describe('Loadbalancer tests', function(){
                 "name": "NodeJS SDK Test - RENAME UPDATED"
             }
         };
-        pb.updateLoadbalancer(dc.id, lb.id, lbUpdate, function (error, response, body) {
+        lib.updateLoadbalancer(dc.id, lb.id, lbUpdate, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -147,12 +147,12 @@ describe('Loadbalancer tests', function(){
         var lbPatch = {
             "name": "NodeJS SDK Test - RENAME PATCHED"
         };
-        pb.patchLoadbalancer(dc.id, lb.id, lbPatch, function(error, response, body){
+        lib.patchLoadbalancer(dc.id, lb.id, lbPatch, function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
             setTimeout(function(){
-                pb.getLoadbalancer(dc.id, lb.id, function(error, response, body){
+                lib.getLoadbalancer(dc.id, lb.id, function(error, response, body){
                     assert.equal(error, null);
                     assert.notEqual(response, null);
                     assert.notEqual(body, null);
@@ -168,7 +168,7 @@ describe('Loadbalancer tests', function(){
     });
 
     it('List balanced NICs', function(done){
-        pb.listBalancedNics(dc.id, lb.id, function(error, response, body){
+        lib.listBalancedNics(dc.id, lb.id, function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -189,7 +189,7 @@ describe('Loadbalancer tests', function(){
                 "lan": "1"
             }
         };
-        pb.createServer(dc.id, config.serverSim, function (error, response, body) {
+        lib.createServer(dc.id, config.serverSim, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -197,7 +197,7 @@ describe('Loadbalancer tests', function(){
             assert.notEqual(object.id, null);
             var server2 = object;
             setTimeout(function(){
-                pb.createNic(dc.id, server2.id, nicReq, function(error, response, body){
+                lib.createNic(dc.id, server2.id, nicReq, function(error, response, body){
                     assert.equal(error, null);
                     assert.notEqual(response, null);
                     assert.notEqual(body, null);
@@ -205,7 +205,7 @@ describe('Loadbalancer tests', function(){
                     assert.notEqual(object.id, null);
                     var nic2 = object;
                     setTimeout(function(){
-                        pb.associateNics(dc.id, lb.id, { "id": nic2.id }, function (error, response, body) {
+                        lib.associateNics(dc.id, lb.id, { "id": nic2.id }, function (error, response, body) {
                             assert.equal(error, null);
                             assert.notEqual(response, null);
                             assert.notEqual(body, null);
@@ -221,7 +221,7 @@ describe('Loadbalancer tests', function(){
     });
 
     it('Get balanced NIC', function(done){
-        pb.getBalancedNic(dc.id, lb.id, nic.id, function (error, response, body) {
+        lib.getBalancedNic(dc.id, lb.id, nic.id, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -241,12 +241,12 @@ describe('Loadbalancer tests', function(){
     });
 
     it('Delete balanced NIC', function(done){
-        pb.deleteBalancedNic(dc.id, lb.id, nic.id, function(error, response, body){
+        lib.deleteBalancedNic(dc.id, lb.id, nic.id, function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.equal(body, "");
             setTimeout(function(){
-                pb.listBalancedNics(dc.id, lb.id, function(error, response, body){
+                lib.listBalancedNics(dc.id, lb.id, function(error, response, body){
                     assert.equal(error, null);
                     assert.notEqual(response, null);
                     assert.notEqual(body, null);
@@ -259,7 +259,7 @@ describe('Loadbalancer tests', function(){
     });
 
     it('Delete loadbalancer', function(done){
-        pb.deleteLoadbalancer(dc.id, lb.id, function(error, response, body){
+        lib.deleteLoadbalancer(dc.id, lb.id, function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.equal(body, "");

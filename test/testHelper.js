@@ -1,13 +1,13 @@
 /**
  * Created by ssabic on 06/07/15.
  */
-var user = process.env.PROFITBRICKS_USERNAME;
-var pass = process.env.PROFITBRICKS_PASSWORD;
+var user = process.env.IONOS_USERNAME;
+var pass = process.env.IONOS_PASSWORD;
 
 var helper = {};
 
-helper.authenticate = function(pb){
-    pb.pbauth(new Buffer(user + ':' + pass, 'ascii').toString('base64'));
+helper.authenticate = function(lib){
+    lib.auth(new Buffer(user + ':' + pass, 'ascii').toString('base64'));
 };
 
 helper.getCredentials = function(){

@@ -3,11 +3,11 @@
 // build a datacenter with 37 servers
 
 	
-var libpb=require('libprofitbricks')
+var lib=require('libionosenterprise')
 
-libpb.setauth('username','password')
+lib.setauth('username','password')
 
-var brickhouse= new libpb.datacenter({
+var brickhouse= new lib.datacenter({
 				name: 'The Brick House', 
 				location: 'us/las', 	
 				description: "She's a brick house" })
@@ -19,9 +19,9 @@ while(servers--){
 	
 	var srvname="srvfu"+server 
 		
-	var srv=new libpb.server({name:srvname,cores:"5",ram:16384})
+	var srv=new lib.server({name:srvname,cores:"5",ram:16384})
 	
 	brickhouse.addServer(srv)
 	}
 	
-libpb.createDatacenter(brickhouse)
+lib.createDatacenter(brickhouse)

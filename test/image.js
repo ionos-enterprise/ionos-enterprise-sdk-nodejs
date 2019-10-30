@@ -2,7 +2,7 @@
  * Created by ssabic on 06/07/15.
  */
 var assert = require('assert-plus');
-var pb = require('../lib/libprofitbricks');
+var lib = require('../lib/libionosenterprise');
 var helper = require('../test/testHelper');
 var config = require('../test/config');
 var image = {};
@@ -11,12 +11,12 @@ describe('Image tests', function(){
     this.timeout(80000);
 
     before(function(done){
-        helper.authenticate(pb);
+        helper.authenticate(lib);
         done();
     });
 
     it('List images', function(done){
-        pb.listImages(function(error, response, body){
+        lib.listImages(function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -39,7 +39,7 @@ describe('Image tests', function(){
     });
 
     it('Get image', function(done){
-        pb.getImage(image.id, function(error, response, body){
+        lib.getImage(image.id, function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -69,7 +69,7 @@ describe('Image tests', function(){
     });
 
     it('Get image failure', function (done) {
-        pb.getImage('00000000-0000-0000-0000-000000000000', function (error, response, body) {
+        lib.getImage('00000000-0000-0000-0000-000000000000', function (error, response, body) {
             var object = JSON.parse(body);
             assert.equal(object['httpStatus'], 404);
             assert.equal(object['messages'][0]['message'], 'Resource does not exist');

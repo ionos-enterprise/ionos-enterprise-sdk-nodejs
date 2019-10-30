@@ -3,12 +3,12 @@
 // reserve ipblock 
 
 
-var libpb=require('libprofitbricks')
-libpb.setauth('username','password')
+var lib=require('libionosenterprise')
+lib.setauth('username','password')
 	
-var ipblk = new libpb.ipblock()
+var ipblk = new lib.ipblock()
 
 ipblk.set('location','de/fkb')
 ipblk.set('size', 5)	
 
-libpb.reserveIpblock(ipblk)
+lib.reserveIpblock(ipblk)

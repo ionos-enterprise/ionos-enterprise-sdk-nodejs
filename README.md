@@ -1,6 +1,6 @@
 # NodeJS SDK
 
-Version: profitbricks-sdk-nodejs **5.0.0**
+Version: ionosenterprise-sdk-nodejs **5.0.0**
 
 ## Table of Contents
 
@@ -40,27 +40,27 @@ Version: profitbricks-sdk-nodejs **5.0.0**
 
 ## Description
 
-The ProfitBricks Client Library for Node.js allows interaction with the ProfitBricks platform over the REST API. It is designed for developers who are building applications in Node.js. This guide will walk you through installing the library and performing various actions against the API.
+The Ionos Enterprise Client Library for Node.js allows interaction with the Ionos Enterprise platform over the REST API. It is designed for developers who are building applications in Node.js. This guide will walk you through installing the library and performing various actions against the API.
 
-The Node.js Client Library, libprofitbricks, wraps the latest version of the ProfitBricks REST API. All API operations are performed over SSL and authenticated using your ProfitBricks account credentials. The API can be accessed within a server running on the ProfitBricks platform or directly over the Internet from any application that can send and receive HTTPS requests and responses. 
+The Node.js Client Library, libionosenterprise, wraps the latest version of the Ionos Enterprise REST API. All API operations are performed over SSL and authenticated using your Ionos Enterprise account credentials. The API can be accessed within a server running on the Ionos Enterprise platform or directly over the Internet from any application that can send and receive HTTPS requests and responses. 
 
 ## Getting Started
 
-Before you begin you will need to have [signed-up](https://www.ProfitBricks.com/signup) for a ProfitBricks account. The credentials you setup during sign-up will be used to authenticate against the API. 
+Before you begin you will need to have [signed-up](https://www.ionos.com/enterprise-cloud/signup) for a Ionos Enterprise account. The credentials you setup during sign-up will be used to authenticate against the API. 
  
 ## Installation
 
-The Node.js Client Library is available on [npm](https://www.npmjs.com/package/libprofitbricks). You can install the latest stable version using npm:
+The Node.js Client Library is available on [npm](https://www.npmjs.com/package/libionosenterprise). You can install the latest stable version using npm:
 
-    npm install libprofitbricks
+    npm install libionosenterprise
 
 ## Usage
 
 ### Authentication
 
-Connecting to ProfitBricks is handled by first setting up your authentication credentials.
+Connecting to Ionos Enterprise is handled by first setting up your authentication credentials.
 
-    var libpb = require('libprofitbricks')
+    var libpb = require('libionosenterprise')
     libpb.setauth('username', 'password')
 
 The `depth` is used to control the depth of JSON object returned. The depth value can be from 1 to 5.
@@ -71,13 +71,13 @@ The `depth` is used to control the depth of JSON object returned. The depth valu
 
 ### How to: Create a Data Center
 
-ProfitBricks uses the concept of data centers. These are logically separated from one another and allow you to have a self-contained environment for all servers, volumes, networking, snapshots, and so forth. The goal is to give you the same experience as you would have if you were running your own physical data center.
+Ionos Enterprise uses the concept of data centers. These are logically separated from one another and allow you to have a self-contained environment for all servers, volumes, networking, snapshots, and so forth. The goal is to give you the same experience as you would have if you were running your own physical data center.
 
 You will need a data center before you can create anything else. Like the server functions, the data center functions can be used to create a simple data center or a complex one. 
 
 To create a simple one you would do this: 
 
-    var libpb = require('libprofitbricks')
+    var libpb = require('libionosenterprise')
 
     libpb.setauth('username', 'password')
     
@@ -95,7 +95,7 @@ To create a simple one you would do this:
         console.log(response)        
     })
     
-You can find more detailed information about data center creation [here](https://devops.profitbricks.com/api/rest/#create-a-data-center)
+You can find more detailed information about data center creation [here](https://devops.ionos.com/api/cloud/v5/#create-a-data-center)
 
 ### How to: Delete a Data Center
 
@@ -126,11 +126,11 @@ The following example shows you how to create a new server in the virtual data c
         console.log(response)
     })
 
-One of the unique features of the ProfitBricks platform when compared with the other providers is that it allows you to define your own settings for cores, memory, and disk size without being tied to a particular size.
+One of the unique features of the Ionos Enterprise platform when compared with the other providers is that it allows you to define your own settings for cores, memory, and disk size without being tied to a particular size.
 
 ### How to: Update Cores, Memory, and Disk
 
-ProfitBricks allows users to dynamically update cores, memory, and disk independently of each other. This removes the restriction of needing to upgrade to the next instance size to receive an increase in memory. You can now simply increase the server's memory thereby keeping your costs in-line with your resource needs. 
+Ionos Enterprise allows users to dynamically update cores, memory, and disk independently of each other. This removes the restriction of needing to upgrade to the next instance size to receive an increase in memory. You can now simply increase the server's memory thereby keeping your costs in-line with your resource needs. 
 
 The following code illustrates how you can update the cores and memory of a server: 
 
@@ -165,7 +165,7 @@ Listing volumes within a data center:
 
 ### How to: Create Additional Network Interfaces
 
-The ProfitBricks platform supports adding multiple NICs to a server. These NICs can be used to create segmented networks on the platform. 
+The Ionos Enterprise platform supports adding multiple NICs to a server. These NICs can be used to create segmented networks on the platform. 
 
 The sample below shows you how to add a second NIC to an existing server: 
 
@@ -445,16 +445,16 @@ The following example shows you how to create a new group.
 
 ## Support
 
-You can find additional examples in the repository `examples` directory. If you find any issues, please let us know via the [DevOps Central community](https://devops.profitbricks.com) or [GitHub's issue system](https://github.com/profitbricks/profitbricks-sdk-nodejs/issues) and we'll check it out.
+You can find additional examples in the repository `examples` directory. If you find any issues, please let us know via the [DevOps Central community](https://devops.ionos.com) or [GitHub's issue system](https://github.com/ionos-enterprise/ionos-enterprise-sdk-nodejs/issues) and we'll check it out.
 
 ## Testing
 
-You can find a full list of tests inside the `test` directory. Before running the tests, install the package dependencies and export your ProfitBricks credentials.
+You can find a full list of tests inside the `test` directory. Before running the tests, install the package dependencies and export your Ionos Enterprise credentials.
 Note that the test user must have administrator privileges.
 
 
-    export PROFITBRICKS_USERNAME=username
-    export PROFITBRICKS_PASSWORD=password
+    export IONOS_USERNAME=username
+    export IONOS_PASSWORD=password
 
     npm install
 
@@ -473,7 +473,7 @@ To run a particular test context:
 
 ## Contributing
 
-1. Fork it ( https://github.com/profitbricks/profitbricks-sdk-nodejs/fork )
+1. Fork it ( https://github.com/ionos-enterprise/ionos-enterprise-sdk-nodejs/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)

@@ -1,18 +1,18 @@
-var pb = require('../lib/libprofitbricks');
+var lib = require('../lib/libionosenterprise');
 
-// pb.setauth('username', 'password');
+// lib.setauth('username', 'password');
 
-pb.listK8SClusters((error, response, body) => {
+lib.listK8SClusters((error, response, body) => {
   let data = JSON.parse(body);
 
-  pb.getK8SClusterConfig(data['items'][0]['id']);
+  lib.getK8SClusterConfig(data['items'][0]['id']);
 
-  pb.listDatacenters((e, r, b) => {
+  lib.listDatacenters((e, r, b) => {
     let dcs = JSON.parse(b);
 
-    pb.listK8SClusterNodePools(data['items'][0]['id']);
+    lib.listK8SClusterNodePools(data['items'][0]['id']);
 
-    // pb.createK8SClusterNodePool(
+    // lib.createK8SClusterNodePool(
     //   data['items'][0]['id'],
     //   {
     //     "properties": {
@@ -31,7 +31,7 @@ pb.listK8SClusters((error, response, body) => {
 
   });
 
-  // pb.createK8SCluster('k1', (error, response, body) => {
+  // lib.createK8SCluster('k1', (error, response, body) => {
   //   console.log(body);
   // });
 });

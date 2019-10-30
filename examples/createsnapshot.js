@@ -4,9 +4,9 @@
 **/	
 
 
-var libpb=require('libprofitbricks')
+var lib=require('libionosenterprise')
 
-libpb.setauth('username','password') 		// <---- Your username and password
+lib.setauth('username','password') 		// <---- Your username and password
 
 var dc_id='f355b51d-1c9c-4150-bc55-a616fe3bf437' // <----- Your data center id
 
@@ -18,4 +18,4 @@ var jason={
 	description: 'The thirty-fifth snapshot of my favorite volume'
 	}	
 
-libpb.createSnapshot(dcid,volumeid,jason)
+lib.createSnapshot(dcid,volumeid,jason)

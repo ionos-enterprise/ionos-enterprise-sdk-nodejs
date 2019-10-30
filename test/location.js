@@ -2,7 +2,7 @@
  * Created by ssabic on 09/07/15.
  */
 var assert = require('assert');
-var pb = require('../lib/libprofitbricks');
+var lib = require('../lib/libionosenterprise');
 var helper = require('../test/testHelper');
 var config = require('../test/config');
 
@@ -10,12 +10,12 @@ describe('Location tests', function(){
     this.timeout(20000);
 
     before(function(done){
-        helper.authenticate(pb);
+        helper.authenticate(lib);
         done();
     });
 
     it('List locations', function(done){
-        pb.listLocations(function(error, response, body){
+        lib.listLocations(function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -30,7 +30,7 @@ describe('Location tests', function(){
     });
 
     it('Get location', function(done){
-        pb.getLocation('us/las', function(error, response, body){
+        lib.getLocation('us/las', function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -42,7 +42,7 @@ describe('Location tests', function(){
     });
 
     it('Get location failure', function (done) {
-        pb.getLocation('us/00000000-0000-0000-0000-000000000000', function (error, response, body) {
+        lib.getLocation('us/00000000-0000-0000-0000-000000000000', function (error, response, body) {
             var object = JSON.parse(body);
             assert.equal(object['httpStatus'], 404);
             assert.equal(object['messages'][0]['message'], 'Resource does not exist');

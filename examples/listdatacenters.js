@@ -2,8 +2,8 @@
 
 // list datacenters
 
-var libpb=require('libprofitbricks')
+var lib=require('libionosenterprise')
 
-libpb.setauth('username','password')
+lib.setauth('username','password')
 	
-libpb.listDatacenters()
+lib.listDatacenters()

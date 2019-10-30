@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
 
-libpb=require('libprofitbricks')
-libpb.setauth('username','password')
+lib=require('libionosenterprise')
+lib.setauth('username','password')
 var props={"name":"UltraMega Data Center",
 			"location":"us/las",
 			"description":"UltraMega description"}
-var dc= new libpb.datacenter(props)// <--- dc is a json object 
+var dc= new lib.datacenter(props)// <--- dc is a json object 
 
 
 

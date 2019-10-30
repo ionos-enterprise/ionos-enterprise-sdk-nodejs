@@ -1,5 +1,5 @@
 var assert = require('assert');
-var pb = require('../lib/libprofitbricks');
+var lib = require('../lib/libionosenterprise');
 var helper = require('../test/testHelper');
 var config = require('../test/config');
 var dc = {};
@@ -9,19 +9,19 @@ describe('Datacenter tests', function(){
     this.timeout(60000);
 
     before(function(done){
-        helper.authenticate(pb);
+        helper.authenticate(lib);
         done();
     });
 
     after(function (done) {
-        pb.deleteDatacenter(dcCom.id, function (error, response, body) {
+        lib.deleteDatacenter(dcCom.id, function (error, response, body) {
             assert.ok(response);
             done();
         });
     });
 
     it('List datacenters', function(done){
-        pb.listDatacenters(function(error, response, body){
+        lib.listDatacenters(function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -33,7 +33,7 @@ describe('Datacenter tests', function(){
     });
 
     it('Create datacenter simple', function(done){
-        pb.createDatacenter(config.dcData, function(error, response, body){
+        lib.createDatacenter(config.dcData, function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -49,7 +49,7 @@ describe('Datacenter tests', function(){
     });
 
     it('Create datacenter composite', function (done) {
-        pb.createDatacenter(config.dcDataCom, function (error, response, body) {
+        lib.createDatacenter(config.dcDataCom, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -68,7 +68,7 @@ describe('Datacenter tests', function(){
 
     it('Get datacenter', function(done){
         setTimeout(function(){
-            pb.getDatacenter(dc.id, function(error, response, body){
+            lib.getDatacenter(dc.id, function(error, response, body){
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -84,7 +84,7 @@ describe('Datacenter tests', function(){
     });
 
     it('Get datacenter failure', function(done){
-        pb.getDatacenter('00000000-0000-0000-0000-000000000000', function(error, response, body){
+        lib.getDatacenter('00000000-0000-0000-0000-000000000000', function(error, response, body){
             var object = JSON.parse(body);
             assert.equal(object['httpStatus'], 404);
             assert.equal(object['messages'][0]['message'], 'Resource does not exist');
@@ -97,7 +97,7 @@ describe('Datacenter tests', function(){
             "properties": {
             }
         }
-        pb.createDatacenter(dcReq, function (error, response, body) {
+        lib.createDatacenter(dcReq, function (error, response, body) {
             var object = JSON.parse(body);
             assert.equal(object['httpStatus'], 422);
             assert.ok(object['messages'][0]['message'].indexOf("Attribute 'location' is required") > -1);
@@ -113,7 +113,7 @@ describe('Datacenter tests', function(){
             }
         };
         setTimeout(function(){
-            pb.updateDatacenter(dc.id, updateData, function(error, response, body){
+            lib.updateDatacenter(dc.id, updateData, function(error, response, body){
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -133,7 +133,7 @@ describe('Datacenter tests', function(){
             "description": "This datacenter is patched using node.js SDK"
         };
         setTimeout(function(){
-            pb.patchDatacenter(dc.id, patchData, function(error, response, body){
+            lib.patchDatacenter(dc.id, patchData, function(error, response, body){
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -150,13 +150,13 @@ describe('Datacenter tests', function(){
 
     it('Delete datacenter', function(done){
         setTimeout(function(){
-            pb.deleteDatacenter(dc.id, function (error, response, body) {
+            lib.deleteDatacenter(dc.id, function (error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.equal(response.statusCode, 202);
                 assert.equal(body, '');
                 setTimeout(function () {
-                    pb.getDatacenter(dc.id, function(error, response, body){
+                    lib.getDatacenter(dc.id, function(error, response, body){
                         assert.equal(error, null);
                         var object = JSON.parse(body);
                         assert.equal(object.messages[0].errorCode, '309');

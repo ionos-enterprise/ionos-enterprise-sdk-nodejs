@@ -2,7 +2,7 @@
  * Created by ssabic on 09/07/15.
  */
 var assert = require('assert');
-var pb = require('../lib/libprofitbricks');
+var lib = require('../lib/libionosenterprise');
 var helper = require('../test/testHelper');
 var config = require('../test/config');
 var dc = {};
@@ -13,8 +13,8 @@ describe('Volume tests', function(){
     this.timeout(300000);
 
     before(function(done){
-        helper.authenticate(pb);
-        pb.listImages(function (error, response, body) {
+        helper.authenticate(lib);
+        lib.listImages(function (error, response, body) {
             var object = JSON.parse(body);
             var images = object.items;
             for (var i = 0; i < images.length; i++) {
@@ -26,7 +26,7 @@ describe('Volume tests', function(){
                     }
                 }
             }
-            pb.createDatacenter(config.dcData, function(error, response, body){
+            lib.createDatacenter(config.dcData, function(error, response, body){
                 assert.equal(error, null);
                 dc = JSON.parse(body);
                 done();
@@ -35,14 +35,14 @@ describe('Volume tests', function(){
     });
 
     after(function(done){
-        pb.deleteDatacenter(dc.id, function(error, response, body){
+        lib.deleteDatacenter(dc.id, function(error, response, body){
             assert.equal(error, null);
             done();
         });
     });
 
     it('List volumes - empty datacenter', function(done){
-        pb.listVolumes(dc.id, function(error, response, body){
+        lib.listVolumes(dc.id, function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -54,7 +54,7 @@ describe('Volume tests', function(){
 
     it('Create volume', function (done) {
         config.bootVolume.properties.image = volumeImage.id;
-        pb.createVolume(dc.id, config.bootVolume, function (error, response, body) {
+        lib.createVolume(dc.id, config.bootVolume, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -83,7 +83,7 @@ describe('Volume tests', function(){
             }
         };
         setTimeout(function () {
-            pb.createVolume(dc.id, volumeReq, function (error, response, body) {
+            lib.createVolume(dc.id, volumeReq, function (error, response, body) {
                 var object = JSON.parse(body);
                 assert.equal(object['httpStatus'], 422);
                 assert.ok(object['messages'][0]['message'].indexOf("Attribute 'size' is required") > -1);
@@ -93,7 +93,7 @@ describe('Volume tests', function(){
     });
 
     it('List volumes', function (done) {
-        pb.listVolumes(dc.id, function (error, response, body) {
+        lib.listVolumes(dc.id, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -107,7 +107,7 @@ describe('Volume tests', function(){
 
     it('Get volume', function (done) {
         setTimeout(function () {
-            pb.getVolume(dc.id, volume.id, function (error, response, body) {;
+            lib.getVolume(dc.id, volume.id, function (error, response, body) {;
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -127,7 +127,7 @@ describe('Volume tests', function(){
     });
 
     it('Get volume failure', function (done) {
-        pb.getVolume(dc.id, '00000000-0000-0000-0000-000000000000', function (error, response, body) {
+        lib.getVolume(dc.id, '00000000-0000-0000-0000-000000000000', function (error, response, body) {
             var object = JSON.parse(body);
             assert.equal(object['httpStatus'], 404);
             assert.equal(object['messages'][0]['message'], 'Resource does not exist');
@@ -143,7 +143,7 @@ describe('Volume tests', function(){
             }
         };
         setTimeout(function () {
-            pb.updateVolume(dc.id, volume.id, volumeUpdate, function (error, response, body) {
+            lib.updateVolume(dc.id, volume.id, volumeUpdate, function (error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -161,7 +161,7 @@ describe('Volume tests', function(){
         var volumePatch = {
             "name": config.bootVolume.properties.name + " RENAME PATCHED"
         };
-        pb.patchVolume(dc.id, volume.id, volumePatch, function (error, response, body) {
+        lib.patchVolume(dc.id, volume.id, volumePatch, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -169,7 +169,7 @@ describe('Volume tests', function(){
             assert.equal(object.id, volume.id);
             assert.equal(object.type, 'volume');
             setTimeout(function () {
-                pb.getVolume(dc.id, volume.id, function (error, response, body) {
+                lib.getVolume(dc.id, volume.id, function (error, response, body) {
                     assert.equal(error, null);
                     assert.notEqual(response, null);
                     assert.notEqual(body, null);
@@ -182,7 +182,7 @@ describe('Volume tests', function(){
     });
 
     it('Delete volume', function(done){
-        pb.deleteVolume(dc.id, volume.id, function(error, response, body){
+        lib.deleteVolume(dc.id, volume.id, function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.equal(body, "");

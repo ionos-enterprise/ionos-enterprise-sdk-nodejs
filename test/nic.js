@@ -2,7 +2,7 @@
  * Created by ssabic on 08/07/15.
  */
 var assert = require('assert');
-var pb = require('../lib/libprofitbricks');
+var lib = require('../lib/libionosenterprise');
 var helper = require('../test/testHelper');
 var config = require('../test/config');
 var dc = {};
@@ -14,15 +14,15 @@ describe('NIC tests', function(){
     this.timeout(90000);
 
     before(function(done){
-        helper.authenticate(pb);
-        pb.createDatacenter(config.dcData, function(error, response, body){
+        helper.authenticate(lib);
+        lib.createDatacenter(config.dcData, function(error, response, body){
             assert.equal(error, null);
             dc = JSON.parse(body);
-            pb.createLan(dc.id, config.lan2, function (error, response, body) {
+            lib.createLan(dc.id, config.lan2, function (error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
-                pb.createServer(dc.id, config.serverSim, function(error, response, body){
+                lib.createServer(dc.id, config.serverSim, function(error, response, body){
                     assert.equal(error, null);
                     assert.notEqual(response, null);
                     assert.notEqual(body, null);
@@ -36,7 +36,7 @@ describe('NIC tests', function(){
     });
 
     after(function(done){
-        pb.deleteDatacenter(dc.id, function(error, response, body){
+        lib.deleteDatacenter(dc.id, function(error, response, body){
             assert.equal(error, null);
             done();
         });
@@ -44,7 +44,7 @@ describe('NIC tests', function(){
 
     it('Create NIC', function (done) {
         setTimeout(function () {
-            pb.createNic(dc.id, server.id, config.nic, function (error, response, body) {
+            lib.createNic(dc.id, server.id, config.nic, function (error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -70,7 +70,7 @@ describe('NIC tests', function(){
                 "name": config.nic.properties.name
             }
         };
-        pb.createNic(dc.id, server.id, nicReq, function (error, response, body) {
+        lib.createNic(dc.id, server.id, nicReq, function (error, response, body) {
             var object = JSON.parse(body);
             assert.equal(object['httpStatus'], 422);
             assert.ok(object['messages'][0]['message'].indexOf("Attribute 'lan' is required") > -1);
@@ -80,7 +80,7 @@ describe('NIC tests', function(){
 
     it('List NICs', function (done) {
         setTimeout(function () {
-            pb.listNics(dc.id, server.id, function (error, response, body) {
+            lib.listNics(dc.id, server.id, function (error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -94,7 +94,7 @@ describe('NIC tests', function(){
     });
 
     it('Get NIC', function(done){
-        pb.getNic(dc.id, server.id, nic.id, function (error, response, body) {
+        lib.getNic(dc.id, server.id, nic.id, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -114,7 +114,7 @@ describe('NIC tests', function(){
     });
 
     it('Get NIC failure', function (done) {
-        pb.getNic(dc.id, server.id, '00000000-0000-0000-0000-000000000000', function (error, response, body) {
+        lib.getNic(dc.id, server.id, '00000000-0000-0000-0000-000000000000', function (error, response, body) {
             var object = JSON.parse(body);
             assert.equal(object['httpStatus'], 404);
             assert.equal(object['messages'][0]['message'], 'Resource does not exist');
@@ -130,7 +130,7 @@ describe('NIC tests', function(){
             }
         };
         setTimeout(function(){
-            pb.updateNic(dc.id, server.id, nic.id, updateJson, function (error, response, body) {
+            lib.updateNic(dc.id, server.id, nic.id, updateJson, function (error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -149,7 +149,7 @@ describe('NIC tests', function(){
             "name": config.nic.properties.name + " RENAME PATCHED"
         };
         setTimeout(function(){
-            pb.patchNic(dc.id, server.id, nic.id, patchJson, function(error, response, body){
+            lib.patchNic(dc.id, server.id, nic.id, patchJson, function(error, response, body){
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -163,7 +163,7 @@ describe('NIC tests', function(){
     });
 
     it('Create FW rule', function(done){
-        pb.createFWRule(dc.id, server.id, nic.id, config.firewallRule, function(error, response, body){
+        lib.createFWRule(dc.id, server.id, nic.id, config.firewallRule, function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -190,7 +190,7 @@ describe('NIC tests', function(){
                 "name": config.firewallRule.properties.name
             }
         };
-        pb.createFWRule(dc.id, server.id, nic.id, fwReq, function (error, response, body) {
+        lib.createFWRule(dc.id, server.id, nic.id, fwReq, function (error, response, body) {
             var object = JSON.parse(body);
             assert.equal(object['httpStatus'], 422);
             assert.ok(object['messages'][0]['message'].indexOf("Attribute 'protocol' is required") > -1);
@@ -200,7 +200,7 @@ describe('NIC tests', function(){
 
     it('List FW rules', function (done) {
         setTimeout(function () {
-            pb.listFWRules(dc.id, server.id, nic.id, function (error, response, body) {
+            lib.listFWRules(dc.id, server.id, nic.id, function (error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -214,7 +214,7 @@ describe('NIC tests', function(){
 
     it('Get FW rule', function(done){
         setTimeout(function(){
-            pb.getFWRule(dc.id, server.id, nic.id, fwRule.id, function(error, response, body){
+            lib.getFWRule(dc.id, server.id, nic.id, fwRule.id, function(error, response, body){
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -236,7 +236,7 @@ describe('NIC tests', function(){
     });
 
     it('Get FW rule failure', function (done) {
-        pb.getFWRule(dc.id, server.id, nic.id, '00000000-0000-0000-0000-000000000000', function (error, response, body) {
+        lib.getFWRule(dc.id, server.id, nic.id, '00000000-0000-0000-0000-000000000000', function (error, response, body) {
             var object = JSON.parse(body);
             assert.equal(object['httpStatus'], 404);
             assert.equal(object['messages'][0]['message'], 'Resource does not exist');
@@ -250,7 +250,7 @@ describe('NIC tests', function(){
                 "name": config.firewallRule.properties.name + " RENAME UPDATED"
             }
         };
-        pb.updateFWRule(dc.id, server.id, nic.id, fwRule.id, fwRuleJson, function(error, response, body){
+        lib.updateFWRule(dc.id, server.id, nic.id, fwRule.id, fwRuleJson, function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -267,7 +267,7 @@ describe('NIC tests', function(){
             "name": config.firewallRule.properties.name + " RENAME PATCHED"
         };
         setTimeout(function(){
-            pb.patchFWRule(dc.id, server.id, nic.id, fwRule.id, fwRuleJson, function(error, response, body){
+            lib.patchFWRule(dc.id, server.id, nic.id, fwRule.id, fwRuleJson, function(error, response, body){
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -281,12 +281,12 @@ describe('NIC tests', function(){
     });
 
     it('Delete FW rule', function(done){
-        pb.delFWRule(dc.id, server.id, nic.id, fwRule.id, function(error, response, body){
+        lib.delFWRule(dc.id, server.id, nic.id, fwRule.id, function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null)
             setTimeout(function(){
-                pb.listFWRules(dc.id, server.id, nic.id, function(error, response, body){
+                lib.listFWRules(dc.id, server.id, nic.id, function(error, response, body){
                     assert.equal(error, null);
                     assert.notEqual(response, null);
                     assert.notEqual(body, null);
@@ -299,7 +299,7 @@ describe('NIC tests', function(){
     });
 
     it('Delete NIC', function(done){
-        pb.deleteNic(dc.id, server.id, nic.id, function(error, response, body){
+        lib.deleteNic(dc.id, server.id, nic.id, function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.equal(body, "");
