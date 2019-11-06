@@ -1,9 +1,14 @@
 var lib = require('../lib/libionosenterprise');
 
-// lib.setauth('username', 'password');
+// lib.setauth(process.env.IONOSENTERPRISE_USERNAME, process.env.IONOSENTERPRISE_PASSWORD);
 
 lib.listK8SClusters((error, response, body) => {
   let data = JSON.parse(body);
+
+  if (data.items.length < 1) {
+    console.warn('Please create a Kubernetes cluster first!');
+    process.exit(0);
+  }
 
   lib.getK8SClusterConfig(data['items'][0]['id']);
 
