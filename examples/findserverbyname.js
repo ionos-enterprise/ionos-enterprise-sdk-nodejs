@@ -3,11 +3,11 @@
 
 **/	
 
-var libpb=require('libprofitbricks')
+var lib=require('libionosenterprise')
 
-libpb.setauth('username','password') 		// <---- Your username and password
+lib.setauth('username','password') 		// <---- Your username and password
 
-libpb.depth=5	
+lib.depth=5	
 
 var dcid='f355b51d-1c9c-4150-bc55-a616fe3bf437' 	 // <--- Your data center id
 
@@ -42,4 +42,4 @@ function findname(error, response, body) {
 }
 
 
-libpb.listServers(dcid,findname)  
+lib.listServers(dcid,findname)  

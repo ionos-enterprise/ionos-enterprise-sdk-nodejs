@@ -1,5 +1,5 @@
 var assert = require('assert-plus');
-var pb = require('../lib/libprofitbricks');
+var lib = require('../lib/libionosenterprise');
 var helper = require('../test/testHelper');
 var config = require('../test/config');
 var dc = {};
@@ -15,18 +15,18 @@ describe('User management tests', function () {
     this.timeout(300000);
 
     before(function (done) {
-        helper.authenticate(pb);
-        pb.reserveIpblock(config.ipblock, function (error, response, body) {
+        helper.authenticate(lib);
+        lib.reserveIpblock(config.ipblock, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
             var object = JSON.parse(body);
             ipblock = object;
         });
-        pb.createDatacenter(config.dcData, function (error, response, body) {
+        lib.createDatacenter(config.dcData, function (error, response, body) {
             assert.equal(error, null);
             dc = JSON.parse(body);
-            pb.createVolume(dc.id, config.volume, function (error, response, body) {
+            lib.createVolume(dc.id, config.volume, function (error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -34,7 +34,7 @@ describe('User management tests', function () {
                 assert.notEqual(object.id, null);
                 volume = object;
                 setTimeout(function () {
-                    pb.createSnapshot(dc.id, volume.id, config.snapshot, function (error, response, body) {
+                    lib.createSnapshot(dc.id, volume.id, config.snapshot, function (error, response, body) {
                         assert.equal(error, null);
                         assert.notEqual(response, null);
                         assert.notEqual(body, null);
@@ -48,38 +48,38 @@ describe('User management tests', function () {
     });
 
     after(function (done) {
-        pb.releaseIpblock(ipblock.id, function (error, response, body) {
+        lib.releaseIpblock(ipblock.id, function (error, response, body) {
             assert.equal(error, null);
         });
         
         if (group != null) {
-            pb.deleteGroup(group.id, function (error, response, body) {
+            lib.deleteGroup(group.id, function (error, response, body) {
                 assert.equal(error, null);
             });
         }
 
         if (user != null) {
-            pb.deleteUser(user.id, function (error, response, body) {
+            lib.deleteUser(user.id, function (error, response, body) {
                 assert.equal(error, null);
             });
         }
 
         if (snapshot != null) {
             setTimeout(function () {
-                pb.deleteSnapshot(snapshot.id, function (error, response, body) {
+                lib.deleteSnapshot(snapshot.id, function (error, response, body) {
                     assert.equal(error, null);
                     assert.notEqual(response, null);
                     assert.equal(body, "");
                 });
                 setTimeout(function () {
-                    pb.deleteDatacenter(dc.id, function (error, response, body) {
+                    lib.deleteDatacenter(dc.id, function (error, response, body) {
                         assert.equal(error, null);
                         done();
                     });
                 }, 60000);
             }, 90000);
         } else {
-            pb.deleteDatacenter(dc.id, function (error, response, body) {
+            lib.deleteDatacenter(dc.id, function (error, response, body) {
                 assert.equal(error, null);
                 done();
             });
@@ -87,7 +87,7 @@ describe('User management tests', function () {
     });
 
     it('Create group', function (done) {
-        pb.createGroup(config.group, function (error, response, body) {
+        lib.createGroup(config.group, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -110,7 +110,7 @@ describe('User management tests', function () {
                 "createDataCenter": true
             }
         };
-        pb.createGroup(groupReq, function (error, response, body) {
+        lib.createGroup(groupReq, function (error, response, body) {
             var object = JSON.parse(body);
             assert.equal(object['httpStatus'], 422);
             assert.ok(object['messages'][0]['message'].indexOf("Attribute 'name' is required") > -1);
@@ -119,7 +119,7 @@ describe('User management tests', function () {
     });
 
     it('List groups', function (done) {
-        pb.listGroups(function (error, response, body) {
+        lib.listGroups(function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -131,7 +131,7 @@ describe('User management tests', function () {
     });
 
     it('Get group', function (done) {
-        pb.getGroup(group.id, function (error, response, body) {
+        lib.getGroup(group.id, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -148,7 +148,7 @@ describe('User management tests', function () {
     });
 
     it('Get group failure', function (done) {
-        pb.getGroup('00000000-0000-0000-0000-000000000000', function (error, response, body) {
+        lib.getGroup('00000000-0000-0000-0000-000000000000', function (error, response, body) {
             var object = JSON.parse(body);
             assert.equal(object['httpStatus'], 404);
             assert.equal(object['messages'][0]['message'], 'Resource does not exist');
@@ -163,7 +163,7 @@ describe('User management tests', function () {
                 "createDataCenter": false
             }
         };
-        pb.updateGroup(group.id, updateGroup, function (error, response, body) {
+        lib.updateGroup(group.id, updateGroup, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -179,7 +179,7 @@ describe('User management tests', function () {
     it('Create user', function (done) {
         config.user.properties.email = "no-reply" + helper.getRandomInt(0, Number.MAX_SAFE_INTEGER) + "@example.com";
         config.user.properties.password = "secretpassword123" + helper.getRandomInt(0, Number.MAX_SAFE_INTEGER);
-        pb.createUser(config.user, function (error, response, body) {
+        lib.createUser(config.user, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -203,7 +203,7 @@ describe('User management tests', function () {
                 "password": "secretpassword123"
             }
         };
-        pb.createUser(userReq, function (error, response, body) {
+        lib.createUser(userReq, function (error, response, body) {
             var object = JSON.parse(body);
             assert.equal(object['httpStatus'], 422);
             assert.ok(object['messages'][0]['message'].indexOf("Attribute 'email' is required") > -1);
@@ -212,7 +212,7 @@ describe('User management tests', function () {
     });
 
     it('List users', function (done) {
-        pb.listUsers(function (error, response, body) {
+        lib.listUsers(function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -224,7 +224,7 @@ describe('User management tests', function () {
     });
 
     it('Get user', function (done) {
-        pb.getUser(user.id, function (error, response, body) {
+        lib.getUser(user.id, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -242,7 +242,7 @@ describe('User management tests', function () {
     });
 
     it('Get user failure', function (done) {
-        pb.getUser('00000000-0000-0000-0000-000000000000', function (error, response, body) {
+        lib.getUser('00000000-0000-0000-0000-000000000000', function (error, response, body) {
             var object = JSON.parse(body);
             assert.equal(object['httpStatus'], 404);
             assert.equal(object['messages'][0]['message'], 'Resource does not exist');
@@ -260,7 +260,7 @@ describe('User management tests', function () {
                 "forceSecAuth": false
             }
         };
-        pb.updateUser(user.id, updateUser, function (error, response, body) {
+        lib.updateUser(user.id, updateUser, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -279,7 +279,7 @@ describe('User management tests', function () {
 
     it('Add user to group', function (done) {
         var userReq = { "id": user.id };
-        pb.addGroupUser(group.id, userReq, function (error, response, body) {
+        lib.addGroupUser(group.id, userReq, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -291,7 +291,7 @@ describe('User management tests', function () {
     });
 
     it('List group users', function (done) {
-        pb.listGroupUsers(group.id, function (error, response, body) {
+        lib.listGroupUsers(group.id, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -303,7 +303,7 @@ describe('User management tests', function () {
     });
 
     it('Create share', function (done) {
-        pb.addShare(group.id, ipblock.id, config.share, function (error, response, body) {
+        lib.addShare(group.id, ipblock.id, config.share, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -318,7 +318,7 @@ describe('User management tests', function () {
     });
 
     it('List shares', function (done) {
-        pb.listShares(group.id, function (error, response, body) {
+        lib.listShares(group.id, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -330,7 +330,7 @@ describe('User management tests', function () {
     });
 
     it('Get share', function (done) {
-        pb.getShare(group.id, ipblock.id, function (error, response, body) {
+        lib.getShare(group.id, ipblock.id, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -344,7 +344,7 @@ describe('User management tests', function () {
     });
 
     it('Get share failure', function (done) {
-        pb.getShare(group.id, '00000000-0000-0000-0000-000000000000', function (error, response, body) {
+        lib.getShare(group.id, '00000000-0000-0000-0000-000000000000', function (error, response, body) {
             var object = JSON.parse(body);
             assert.equal(object['httpStatus'], 404);
             assert.equal(object['messages'][0]['message'], 'Resource does not exist');
@@ -358,7 +358,7 @@ describe('User management tests', function () {
                 "editPrivilege": false
             }
         }
-        pb.updateShare(group.id, ipblock.id, shareReq, function (error, response, body) {
+        lib.updateShare(group.id, ipblock.id, shareReq, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -371,7 +371,7 @@ describe('User management tests', function () {
     });
 
     it('Remove share', function (done) {
-        pb.removeShare(group.id, ipblock.id, function (error, response, body) {
+        lib.removeShare(group.id, ipblock.id, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.equal(body, "");
@@ -380,7 +380,7 @@ describe('User management tests', function () {
     });
 
     it('Remove user from group', function (done) {
-        pb.removeGroupUser(group.id, user.id, function (error, response, body) {
+        lib.removeGroupUser(group.id, user.id, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.equal(body, "");
@@ -389,7 +389,7 @@ describe('User management tests', function () {
     });
 
     it('List resources', function (done) {
-        pb.listResources(function (error, response, body) {
+        lib.listResources(function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -402,7 +402,7 @@ describe('User management tests', function () {
     });
 
     it('List datacenter resources', function (done) {
-        pb.listResourcesByType("datacenter", function (error, response, body) {
+        lib.listResourcesByType("datacenter", function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -415,7 +415,7 @@ describe('User management tests', function () {
     });
 
     it('List image resources', function (done) {
-        pb.listResourcesByType("image", function (error, response, body) {
+        lib.listResourcesByType("image", function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -429,7 +429,7 @@ describe('User management tests', function () {
     });
 
     it('List ipblock resources', function (done) {
-        pb.listResourcesByType("ipblock", function (error, response, body) {
+        lib.listResourcesByType("ipblock", function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -442,7 +442,7 @@ describe('User management tests', function () {
     });
 
     it('List snapshot resources', function (done) {
-        pb.listResourcesByType("snapshot", function (error, response, body) {
+        lib.listResourcesByType("snapshot", function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -455,7 +455,7 @@ describe('User management tests', function () {
     });
 
     it('List resources failure', function (done) {
-        pb.listResourcesByType('unknown', function (error, response, body) {
+        lib.listResourcesByType('unknown', function (error, response, body) {
             var object = JSON.parse(body);
             assert.equal(object['httpStatus'], 404);
             assert.equal(object['messages'][0]['message'], 'Resource does not exist');
@@ -464,7 +464,7 @@ describe('User management tests', function () {
     });
 
     it('Get datacenter resource', function (done) {
-        pb.getResourceByType("datacenter", dc.id, function(error, response, body) {
+        lib.getResourceByType("datacenter", dc.id, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -476,7 +476,7 @@ describe('User management tests', function () {
     });
 
     it('Get image resource', function (done) {
-        pb.getResourceByType("image", image.id, function (error, response, body) {
+        lib.getResourceByType("image", image.id, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -488,7 +488,7 @@ describe('User management tests', function () {
     });
 
     it('Get ipblock resource', function (done) {
-        pb.getResourceByType("ipblock", ipblock.id, function (error, response, body) {
+        lib.getResourceByType("ipblock", ipblock.id, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -500,7 +500,7 @@ describe('User management tests', function () {
     });
 
     it('Get snapshot resource', function (done) {
-        pb.getResourceByType("snapshot", snapshot.id, function (error, response, body) {
+        lib.getResourceByType("snapshot", snapshot.id, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -512,7 +512,7 @@ describe('User management tests', function () {
     });
 
     it('Get resources failure', function (done) {
-        pb.getResourceByType('datacenter', '00000000-0000-0000-0000-000000000000', function (error, response, body) {
+        lib.getResourceByType('datacenter', '00000000-0000-0000-0000-000000000000', function (error, response, body) {
             var object = JSON.parse(body);
             assert.equal(object['httpStatus'], 404);
             assert.equal(object['messages'][0]['message'], 'Resource does not exist');
@@ -521,7 +521,7 @@ describe('User management tests', function () {
     });
 
     it('Delete group', function (done) {
-        pb.deleteGroup(group.id, function (error, response, body) {
+        lib.deleteGroup(group.id, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.equal(body, "");
@@ -531,7 +531,7 @@ describe('User management tests', function () {
     });
 
     it('Delete user', function (done) {
-        pb.deleteUser(user.id, function (error, response, body) {
+        lib.deleteUser(user.id, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.equal(body, "");

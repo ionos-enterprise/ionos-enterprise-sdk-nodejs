@@ -1,16 +1,16 @@
 /**
  * Created by ssabic on 06/07/15.
  */
-var user = process.env.PROFITBRICKS_USERNAME;
-var pass = process.env.PROFITBRICKS_PASSWORD;
+var user = process.env.IONOSENTERPRISE_USERNAME;
+var pass = process.env.IONOSENTERPRISE_PASSWORD;
 
 var helper = {};
 
-helper.authenticate = function(pb){
-    pb.pbauth(new Buffer(user + ':' + pass, 'ascii').toString('base64'));
+helper.authenticate = function (lib) {
+    lib.auth(new Buffer(user + ':' + pass, 'ascii').toString('base64'));
 };
 
-helper.getCredentials = function(){
+helper.getCredentials = function () {
     var creds = {};
     creds.user = user;
 
@@ -24,4 +24,4 @@ helper.getRandomInt = function (min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
 };
 
-module.exports=(function(){ return helper})()
+module.exports = (function () { return helper })()

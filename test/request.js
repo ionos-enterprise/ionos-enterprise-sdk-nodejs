@@ -2,7 +2,7 @@
  * Created by ssabic on 09/07/15.
  */
 var assert = require('assert-plus');
-var pb = require('../lib/libprofitbricks');
+var lib = require('../lib/libionosenterprise');
 var helper = require('../test/testHelper');
 
 var req = {};
@@ -11,12 +11,12 @@ describe('Request tests', function(){
     this.timeout(20000);
 
     before(function(done){
-        helper.authenticate(pb);
+        helper.authenticate(lib);
         done();
     });
 
     it('List requests', function(done){
-        pb.listRequests(function(error, response, body){
+        lib.listRequests(function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -29,7 +29,7 @@ describe('Request tests', function(){
     });
 
     it('Get request', function(done){
-        pb.getRequest(req.id, function(error, response, body){
+        lib.getRequest(req.id, function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -41,7 +41,7 @@ describe('Request tests', function(){
     });
 
     it('Get request failure', function (done) {
-        pb.getRequest('00000000-0000-0000-0000-000000000000', function (error, response, body) {
+        lib.getRequest('00000000-0000-0000-0000-000000000000', function (error, response, body) {
             var object = JSON.parse(body);
             assert.equal(object['httpStatus'], 404);
             assert.equal(object['messages'][0]['message'], 'Resource does not exist');
@@ -50,7 +50,7 @@ describe('Request tests', function(){
     });
 
     it('Status request', function(done){
-        pb.statusRequest(req.id, function(error, response, body){
+        lib.statusRequest(req.id, function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);

@@ -2,7 +2,7 @@
  * Created by ssabic on 09/07/15.
  */
 var assert = require('assert-plus');
-var pb = require('../lib/libprofitbricks');
+var lib = require('../lib/libionosenterprise');
 var helper = require('../test/testHelper');
 var config = require('../test/config');
 var dc = {};
@@ -13,11 +13,11 @@ describe('Snapshot tests', function() {
     this.timeout(300000);
 
     before(function(done) {
-        helper.authenticate(pb);
-        pb.createDatacenter(config.dcData, function(error, response, body) {
+        helper.authenticate(lib);
+        lib.createDatacenter(config.dcData, function(error, response, body) {
             assert.equal(error, null);
             dc = JSON.parse(body);
-            pb.createVolume(dc.id, config.volume, function(error, response, body) {
+            lib.createVolume(dc.id, config.volume, function(error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -32,20 +32,20 @@ describe('Snapshot tests', function() {
     after(function (done) {
         if (snapshot != null) {
             setTimeout(function () {
-                pb.deleteSnapshot(snapshot.id, function (error, response, body) {
+                lib.deleteSnapshot(snapshot.id, function (error, response, body) {
                     assert.equal(error, null);
                     assert.notEqual(response, null);
                     assert.equal(body, "");
                 });
                 setTimeout(function () {
-                    pb.deleteDatacenter(dc.id, function (error, response, body) {
+                    lib.deleteDatacenter(dc.id, function (error, response, body) {
                         assert.equal(error, null);
                         done();
                     });
                 }, 60000);
             }, 90000);
         } else {
-            pb.deleteDatacenter(dc.id, function (error, response, body) {
+            lib.deleteDatacenter(dc.id, function (error, response, body) {
                 assert.equal(error, null);
                 done();
             });
@@ -54,7 +54,7 @@ describe('Snapshot tests', function() {
 
     it('Create snapshot', function(done) {
         setTimeout(function() {
-            pb.createSnapshot(dc.id, volume.id, config.snapshot, function (error, response, body) {
+            lib.createSnapshot(dc.id, volume.id, config.snapshot, function (error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -70,7 +70,7 @@ describe('Snapshot tests', function() {
     });
 
     it('Create snapshots failure', function (done) {
-        pb.createSnapshot('00000000-0000-0000-0000-000000000000', volume.id, config.snapshot, function (error, response, body) {
+        lib.createSnapshot('00000000-0000-0000-0000-000000000000', volume.id, config.snapshot, function (error, response, body) {
             var object = JSON.parse(body);
             assert.equal(object['httpStatus'], 404);
             assert.equal(object['messages'][0]['message'], 'Resource does not exist');
@@ -80,7 +80,7 @@ describe('Snapshot tests', function() {
 
     it('List snapshots', function (done) {
         setTimeout(function () {
-            pb.listSnapshots(function (error, response, body) {
+            lib.listSnapshots(function (error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -93,7 +93,7 @@ describe('Snapshot tests', function() {
     });
 
     it('Get snapshots', function(done) {
-        pb.getSnapshot(snapshot.id, function(error, response, body) {
+        lib.getSnapshot(snapshot.id, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -121,7 +121,7 @@ describe('Snapshot tests', function() {
     });
 
     it('Get snapshots failure', function (done) {
-        pb.getSnapshot('00000000-0000-0000-0000-000000000000', function (error, response, body) {
+        lib.getSnapshot('00000000-0000-0000-0000-000000000000', function (error, response, body) {
             var object = JSON.parse(body);
             assert.equal(object['httpStatus'], 404);
             assert.equal(object['messages'][0]['message'], 'Resource does not exist');
@@ -136,7 +136,7 @@ describe('Snapshot tests', function() {
                 "description": config.snapshot.description + " - RENAME UPDATED"
             }
         };
-        pb.updateSnapshot(snapshot.id, snapshotUpdate, function(error, response, body) {
+        lib.updateSnapshot(snapshot.id, snapshotUpdate, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -153,7 +153,7 @@ describe('Snapshot tests', function() {
             "name": config.snapshot.name + " - RENAME PATCHED",
             "description": config.snapshot.description + " - RENAME PATCHED"
         };
-        pb.patchSnapshot(snapshot.id, snapshotPatch, function(error, response, body) {
+        lib.patchSnapshot(snapshot.id, snapshotPatch, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -177,7 +177,7 @@ describe('Snapshot tests', function() {
             }
         };
 
-        pb.createVolume(dc.id, volumeReq, function(error, response, body) {
+        lib.createVolume(dc.id, volumeReq, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -185,7 +185,7 @@ describe('Snapshot tests', function() {
             assert.notEqual(object.id, null);
             newVolume = object;
             setTimeout(function() {
-                pb.restoreSnapshot(dc.id, newVolume.id, {
+                lib.restoreSnapshot(dc.id, newVolume.id, {
                     "snapshotId": snapshot.id
                 }, function(error, response, body) {
                     assert.equal(error, null);
@@ -201,14 +201,14 @@ describe('Snapshot tests', function() {
 
     it('Delete snapshot', function(done) {
         setTimeout(function() {
-            pb.deleteSnapshot(snapshot.id, function(error, response, body) {
+            lib.deleteSnapshot(snapshot.id, function(error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.equal(body, "");
                 snapshot = null;
             });
             setTimeout(function() {
-                pb.deleteDatacenter(dc.id, function(error, response, body) {
+                lib.deleteDatacenter(dc.id, function(error, response, body) {
                     assert.equal(error, null);
                     done();
                 });

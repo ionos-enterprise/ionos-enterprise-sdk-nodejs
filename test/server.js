@@ -1,5 +1,5 @@
 var assert = require('assert-plus');
-var pb = require('../lib/libprofitbricks');
+var lib = require('../lib/libionosenterprise');
 var helper = require('../test/testHelper');
 var config = require('../test/config');
 var dc = {};
@@ -14,8 +14,8 @@ describe('Server tests', function() {
     this.timeout(300000);
 
     before(function(done) {
-        helper.authenticate(pb);
-        pb.listImages(function (error, response, body) {
+        helper.authenticate(lib);
+        lib.listImages(function (error, response, body) {
             var object = JSON.parse(body);
             var images = object.items;
             for (var i = 0; i < images.length; i++) {
@@ -31,11 +31,11 @@ describe('Server tests', function() {
                     }
                 }
             }
-            pb.createDatacenter(config.dcData, function (error, response, body) {
+            lib.createDatacenter(config.dcData, function (error, response, body) {
                 assert.equal(error, null);
                 dc = JSON.parse(body);
                 config.bootVolume.properties.image = image;
-                pb.createVolume(dc.id, config.bootVolume, function (error, response, body) {
+                lib.createVolume(dc.id, config.bootVolume, function (error, response, body) {
                     assert.equal(error, null);
                     assert.notEqual(response, null);
                     assert.notEqual(body, null);
@@ -43,7 +43,7 @@ describe('Server tests', function() {
                     assert.notEqual(object.id, null);
                     bootVolume = object;
                     setTimeout(function () {
-                        pb.createVolume(dc.id, config.volume, function (error, response, body) {
+                        lib.createVolume(dc.id, config.volume, function (error, response, body) {
                             assert.equal(error, null);
                             assert.notEqual(response, null);
                             assert.notEqual(body, null);
@@ -59,7 +59,7 @@ describe('Server tests', function() {
     });
 
     after(function(done) {
-        pb.deleteDatacenter(dc.id, function(error, response, body) {
+        lib.deleteDatacenter(dc.id, function(error, response, body) {
             assert.equal(error, null);
             done();
         });
@@ -67,7 +67,7 @@ describe('Server tests', function() {
 
     it('List servers - empty datacenter', function(done) {
         setTimeout(function() {
-            pb.listServers(dc.id, function(error, response, body) {
+            lib.listServers(dc.id, function(error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -88,7 +88,7 @@ describe('Server tests', function() {
                 ]
             }
         };
-        pb.createServer(dc.id, config.serverSim, function (error, response, body) {
+        lib.createServer(dc.id, config.serverSim, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -100,7 +100,7 @@ describe('Server tests', function() {
             assert.equal(object.properties.cores, config.serverSim.properties.cores);
             assert.notEqual(object.entities.volumes, null);
             setTimeout(function () {
-                pb.getServer(dc.id, object.id, function (error, response, body) {
+                lib.getServer(dc.id, object.id, function (error, response, body) {
                     var object = JSON.parse(body);
                     assert.notEqual(object.id, null);
                     assert.equal(object.type, 'server');
@@ -118,12 +118,12 @@ describe('Server tests', function() {
     });
 
     it('Create composite server', function (done) {
-        pb.createLan(dc.id, config.lan, function (error, response, body) {
+        lib.createLan(dc.id, config.lan, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
             config.serverCom.entities.volumes.items[0].properties.image = image;
-            pb.createServer(dc.id, config.serverCom, function (error, response, body) {
+            lib.createServer(dc.id, config.serverCom, function (error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -134,7 +134,7 @@ describe('Server tests', function() {
                 assert.equal(object.properties.ram, config.serverCom.properties.ram);
                 assert.equal(object.properties.cores, config.serverCom.properties.cores);
                 setTimeout(function () {
-                    pb.getServer(dc.id, object.id, function (error, response, body) {
+                    lib.getServer(dc.id, object.id, function (error, response, body) {
                         var object = JSON.parse(body);
                         assert.notEqual(object.id, null);
                         assert.equal(object.entities.volumes.items.length > 0, true);
@@ -148,7 +148,7 @@ describe('Server tests', function() {
 
     it('List servers', function(done) {
         setTimeout(function() {
-            pb.listServers(dc.id, function(error, response, body) {
+            lib.listServers(dc.id, function(error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -161,7 +161,7 @@ describe('Server tests', function() {
     });
 
     it('Get server failure', function (done) {
-        pb.getServer(dc.id, '00000000-0000-0000-0000-000000000000', function (error, response, body) {
+        lib.getServer(dc.id, '00000000-0000-0000-0000-000000000000', function (error, response, body) {
             var object = JSON.parse(body);
             assert.equal(object['httpStatus'], 404);
             assert.equal(object['messages'][0]['message'], 'Resource does not exist');
@@ -176,7 +176,7 @@ describe('Server tests', function() {
                 "ram": 1024
             }
         }
-        pb.createServer(dc.id, serverReq, function (error, response, body) {
+        lib.createServer(dc.id, serverReq, function (error, response, body) {
             var object = JSON.parse(body);
             assert.equal(object['httpStatus'], 422);
             assert.ok(object['messages'][0]['message'].indexOf("Attribute 'cores' is required") > -1);
@@ -185,7 +185,7 @@ describe('Server tests', function() {
     });
 
     it('Stop server', function(done) {
-        pb.stopServer(dc.id, server.id, function(error, response, body) {
+        lib.stopServer(dc.id, server.id, function(error, response, body) {
           assert.equal(error, null);
           assert.notEqual(response, null);
           assert.equal(body, '');
@@ -195,7 +195,7 @@ describe('Server tests', function() {
 
     it('Start server', function(done) {
         setTimeout(function() {
-          pb.startServer(dc.id, server.id, function(error, response, body) {
+          lib.startServer(dc.id, server.id, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.equal(body, '');
@@ -206,7 +206,7 @@ describe('Server tests', function() {
 
     it('Reboot server', function(done) {
         setTimeout(function() {
-          pb.rebootServer(dc.id, server.id, function(error, response, body) {
+          lib.rebootServer(dc.id, server.id, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.equal(body, '');
@@ -216,7 +216,7 @@ describe('Server tests', function() {
     });
 
     it('Get server', function(done) {
-        pb.getServer(dc.id, server.id, function(error, response, body) {
+        lib.getServer(dc.id, server.id, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -242,7 +242,7 @@ describe('Server tests', function() {
             }
         };
         setTimeout(function () {
-            pb.updateServer(dc.id, server.id, updateData, function (error, response, body) {
+            lib.updateServer(dc.id, server.id, updateData, function (error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -259,14 +259,14 @@ describe('Server tests', function() {
             "name": config.serverSim.properties.name + " - RENAME PATCHED"
         };
 
-        pb.patchServer(dc.id, server.id, patchData, function(error, response, body) {
+        lib.patchServer(dc.id, server.id, patchData, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
             var object = JSON.parse(body);
             assert.equal(object.id, server.id);
             setTimeout(function() {
-                pb.getServer(dc.id, server.id, function(error, response, body) {
+                lib.getServer(dc.id, server.id, function(error, response, body) {
                     var object = JSON.parse(body);
                     assert.equal(object.properties.name, patchData.name);
                     done();
@@ -276,7 +276,7 @@ describe('Server tests', function() {
     });
 
     it('List attached volumes', function(done) {
-        pb.listAttachedVolumes(dc.id, server.id, function(error, response, body) {
+        lib.listAttachedVolumes(dc.id, server.id, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -287,14 +287,14 @@ describe('Server tests', function() {
     });
 
     it('Attach volume', function(done) {
-        pb.attachVolume(dc.id, server.id, volume.id, function(error, response, body) {
+        lib.attachVolume(dc.id, server.id, volume.id, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
             var object = JSON.parse(body);
             assert.notEqual(object.id, null);
             setTimeout(function() {
-                pb.listAttachedVolumes(dc.id, server.id, function(error, response, body) {
+                lib.listAttachedVolumes(dc.id, server.id, function(error, response, body) {
                     assert.equal(error, null);
                     assert.notEqual(response, null);
                     assert.notEqual(body, null);
@@ -308,7 +308,7 @@ describe('Server tests', function() {
 
     it('Get attached volume', function(done) {
         setTimeout(function() {
-            pb.getAttachedVolume(dc.id, server.id, volume.id, function(error, response, body) {
+            lib.getAttachedVolume(dc.id, server.id, volume.id, function(error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -320,12 +320,12 @@ describe('Server tests', function() {
     });
 
     it('Detach volume', function(done) {
-        pb.detachVolume(dc.id, server.id, volume.id, function(error, response, body) {
+        lib.detachVolume(dc.id, server.id, volume.id, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
             setTimeout(function() {
-                pb.listAttachedVolumes(dc.id, server.id, function(error, response, body) {
+                lib.listAttachedVolumes(dc.id, server.id, function(error, response, body) {
                     assert.equal(error, null);
                     assert.notEqual(response, null);
                     assert.notEqual(body, null);
@@ -338,7 +338,7 @@ describe('Server tests', function() {
     });
 
     it('Attach CDROM', function (done) {
-        pb.attachCdrom(dc.id, server.id, cdRom.id, function (error, response, body) {
+        lib.attachCdrom(dc.id, server.id, cdRom.id, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -351,7 +351,7 @@ describe('Server tests', function() {
 
     it('Get attached CDROM', function (done) {
         setTimeout(function () {
-            pb.getAttachedCdrom(dc.id, server.id, cdRom.id, function (error, response, body) {
+            lib.getAttachedCdrom(dc.id, server.id, cdRom.id, function (error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -364,7 +364,7 @@ describe('Server tests', function() {
     });
 
     it('List attached CDROMs', function (done) {
-        pb.listAttachedCdroms(dc.id, server.id, function (error, response, body) {
+        lib.listAttachedCdroms(dc.id, server.id, function (error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -377,12 +377,12 @@ describe('Server tests', function() {
 
     it('Dettach CDROM', function (done) {
         setTimeout(function () {
-            pb.detachCdrom(dc.id, server.id, cdRom.id, function (error, response, body) {
+            lib.detachCdrom(dc.id, server.id, cdRom.id, function (error, response, body) {
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.equal(body, '');
                 setTimeout(function () {
-                    pb.getAttachedCdrom(dc.id, server.id, cdRom.id, function (error, response, body) {
+                    lib.getAttachedCdrom(dc.id, server.id, cdRom.id, function (error, response, body) {
                         assert.equal(error, null);
                         var object = JSON.parse(body);
                         assert.equal(object.messages[0].errorCode, '309');
@@ -395,12 +395,12 @@ describe('Server tests', function() {
     });
 
     it('Delete server', function(done) {
-        pb.deleteServer(dc.id, server.id, function(error, response, body) {
+        lib.deleteServer(dc.id, server.id, function(error, response, body) {
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.equal(body, '');
             setTimeout(function() {
-                pb.getServer(dc.id, server.id, function(error, response, body) {
+                lib.getServer(dc.id, server.id, function(error, response, body) {
                     assert.equal(error, null);
                     var object = JSON.parse(body);
                     assert.equal(object.messages[0].errorCode, '309');

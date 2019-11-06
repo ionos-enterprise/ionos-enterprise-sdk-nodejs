@@ -2,10 +2,10 @@
 
 // Generate json for a server
 
-libpb=require('libprofitbricks')
+lib=require('libionosenterprise')
 	
 	
-var srv= new libpb.server({"name":"super server", 
+var srv= new lib.server({"name":"super server", 
 	                           "ram":"3192",
 				   "cores":"1"}) // <--- props passed in
 

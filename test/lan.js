@@ -2,7 +2,7 @@
  * Created by ssabic on 07/07/15.
  */
 var assert = require('assert');
-var pb = require('../lib/libprofitbricks');
+var lib = require('../lib/libionosenterprise');
 var helper = require('../test/testHelper');
 var config = require('../test/config');
 var dc = {};
@@ -12,8 +12,8 @@ describe('LAN tests', function(){
     this.timeout(80000);
 
     before(function(done){
-        helper.authenticate(pb);
-        pb.createDatacenter(config.dcData, function(error, response, body){
+        helper.authenticate(lib);
+        lib.createDatacenter(config.dcData, function(error, response, body){
             assert.equal(error, null);
             dc = JSON.parse(body);
             done();
@@ -21,14 +21,14 @@ describe('LAN tests', function(){
     });
 
     after(function(done){
-        pb.deleteDatacenter(dc.id, function(error, response, body){
+        lib.deleteDatacenter(dc.id, function(error, response, body){
             assert.equal(error, null);
             done();
         });
     });
 
     it('List lans - empty datacenter', function(done){
-        pb.listLans(dc.id, function(error, response, body){
+        lib.listLans(dc.id, function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -39,7 +39,7 @@ describe('LAN tests', function(){
     });
 
     it('Create lan', function(done){
-        pb.createLan(dc.id, config.lan, function(error, response, body){
+        lib.createLan(dc.id, config.lan, function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -54,7 +54,7 @@ describe('LAN tests', function(){
 
     it('List lans', function(done){
         setTimeout(function(){
-            pb.listLans(dc.id, function(error, response, body){
+            lib.listLans(dc.id, function(error, response, body){
                 assert.equal(error, null);
                 assert.notEqual(response, null);
                 assert.notEqual(body, null);
@@ -67,7 +67,7 @@ describe('LAN tests', function(){
     });
 
     it('Get lan', function(done){
-        pb.getLan(dc.id, lan.id, function(error, response, body){
+        lib.getLan(dc.id, lan.id, function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -82,7 +82,7 @@ describe('LAN tests', function(){
     });
 
     it('Get LAN failure', function (done) {
-        pb.getLan(dc.id, 0, function (error, response, body) {
+        lib.getLan(dc.id, 0, function (error, response, body) {
             var object = JSON.parse(body);
             assert.equal(object['httpStatus'], 404);
             assert.equal(object['messages'][0]['message'], 'Resource does not exist');
@@ -91,7 +91,7 @@ describe('LAN tests', function(){
     });
 
     it('Create LAN failure', function (done) {
-        pb.createLan('00000000-0000-0000-0000-000000000000', config.lan, function (error, response, body) {
+        lib.createLan('00000000-0000-0000-0000-000000000000', config.lan, function (error, response, body) {
             var object = JSON.parse(body);
             assert.equal(object['httpStatus'], 404);
             assert.equal(object['messages'][0]['message'], 'Resource does not exist');
@@ -104,12 +104,12 @@ describe('LAN tests', function(){
             "name": config.lan.properties.name + ' - RENAME',
             "public": false
         };
-        pb.patchLan(dc.id, lan.id, lanPatch, function(error, response, body){
+        lib.patchLan(dc.id, lan.id, lanPatch, function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
             setTimeout(function(){
-                pb.getLan(dc.id, lan.id, function(error, response, body){
+                lib.getLan(dc.id, lan.id, function(error, response, body){
                     assert.equal(error, null);
                     assert.notEqual(response, null);
                     assert.notEqual(body, null);
@@ -126,7 +126,7 @@ describe('LAN tests', function(){
     });
 
     it('List LAN members', function(done){
-        pb.listLanMembers(dc.id, lan.id, function(error, response, body){
+        lib.listLanMembers(dc.id, lan.id, function(error, response, body){
             assert.equal(error, null);
             assert.notEqual(response, null);
             assert.notEqual(body, null);
@@ -138,7 +138,7 @@ describe('LAN tests', function(){
     });
 
     it('Delete lan', function(done){
-        pb.deleteLan(dc.id, lan.id, function(error, response, body){
+        lib.deleteLan(dc.id, lan.id, function(error, response, body){
             assert.equal(error, null);
             assert.equal(response.statusCode, 202);
             assert.equal(body, "");

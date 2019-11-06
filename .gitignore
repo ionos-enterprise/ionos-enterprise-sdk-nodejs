@@ -30,3 +30,5 @@ node_modules
 
 # VS Code IntelliSense dir
 typings
+
+package-lock.json
