@@ -452,8 +452,8 @@ You can find additional examples in the repository `examples` directory. If you 
 You can find a full list of tests inside the `test` directory. Before running the tests, install the package dependencies and export your Ionos Enterprise credentials.
 Note that the test user must have administrator privileges.
 
-    export IONOS_USERNAME=username
-    export IONOS_PASSWORD=password
+    export IONOSENTERPRISE_USERNAME=username
+    export IONOSENTERPRISE_PASSWORD=password
 
     npm install
 
