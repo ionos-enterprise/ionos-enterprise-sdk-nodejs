@@ -1,6 +1,6 @@
 {
   "name": "libionosenterprise",
-  "version": "5.1.0",
+  "version": "5.1.1",
   "description": "The Ionos Enterprise Library for Node and Io",
   "main": "./lib/index.js",
   "scripts": {

@@ -1,6 +1,6 @@
 # NodeJS SDK
 
-Version: ionosenterprise-sdk-nodejs **5.1.0**
+Version: ionosenterprise-sdk-nodejs **5.1.1**
 
 ## Table of Contents
 
