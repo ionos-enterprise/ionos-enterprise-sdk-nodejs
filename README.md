@@ -1,3 +1,8 @@
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+# DEPRECATED
+
+This is no longer supported, please consider using [IONOS Cloud SDK NodeJS](https://github.com/ionos-cloud/sdk-nodejs) instead.
+
 # NodeJS SDK
 
 Version: ionosenterprise-sdk-nodejs **5.1.1**
